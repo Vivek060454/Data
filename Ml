@@ -1,0 +1,1308 @@
+PRATICAL 1A) Design a simple machine learning model to train the training
+
+instances and test the same.
+
+import numpy as np
+
+import matplotlib.pyplot as plt
+
+from sklearn.model_selection import train_test_split
+
+from sklearn.metrics import r2_score
+
+# Set a random seed for reproducibility
+
+np.random.seed(2)
+
+# Generate random data
+
+x = np.random.normal(3, 1, 100)
+
+y = np.random.normal(150, 40, 100) / x
+
+# Visualize the data
+
+plt.figure(figsize=(8, 6))
+
+plt.scatter(x, y)
+
+plt.title("Scatter Plot of Data")
+
+plt.xlabel("X")
+
+plt.ylabel("Y")
+
+plt.show()
+
+# Split the data into training and testing sets
+
+train_x, test_x, train_y, test_y = train_test_split(x, y, test_size=0.3)
+
+plt.scatter(train_x,train_y)
+
+plt.show()
+
+plt.scatter(test_x,test_y)
+
+plt.show()
+
+# Create and visualize a polynomial regression model for training data
+
+degree = 4 # Adjust the polynomial degree as needed
+
+train_model = np.poly1d(np.polyfit(train_x, train_y, degree))
+
+myline = np.linspace(0, 6, 200)
+
+plt.figure(figsize=(8, 6))
+
+plt.scatter(train_x, train_y)
+
+plt.plot(myline, train_model(myline))
+
+plt.title("Polynomial Regression Model (T
+
+raining Data)")
+
+plt.xlabel("X")
+
+plt.ylabel("Y")
+
+plt.show()
+
+# Calculate and print the R-squared score for the training data
+
+r2_train = r2_score(train_y, train_model(train_x))
+
+print("R-squared score for training data:", r2_train)
+
+# Create and visualize a polynomial regression model for testing data
+
+test_model = np.poly1d(np.polyfit(test_x, test_y, degree))
+plt.figure(figsize=(8, 6))
+
+plt.scatter(test_x, test_y)
+
+plt.plot(myline, test_model(myline))
+
+plt.title("Polynomial Regression Model (T
+
+esting Data)")
+
+plt.xlabel("X")
+
+plt.ylabel("Y")
+
+plt.show()
+
+# Calculate and print the R-squared score for the testing data
+
+r2_test = r2_score(test_y, test_model(test_x))
+
+print("R-squared score for testing data:", r2_test)
+
+# Make predictions using the model
+
+prediction = test_model(5)
+
+print("Prediction for x = 5:", prediction)
+
+
+
+
+
+PRATICAL 1B) Implement and demonstrate the FIND-S algorithm for finding the
+
+most specific hypothesis based on a given set of training data samples. Read the
+
+training data from a .CSV file.
+
+import numpy as np
+
+import matplotlib.pyplot as plt
+
+from sklearn.model_selection import train_test_split
+
+from sklearn.metrics import r2_score
+
+# Set a random seed for reproducibility
+
+np.random.seed(2)
+
+# Generate random data
+
+x = np.random.normal(3, 1, 100)
+
+y = np.random.normal(150, 40, 100) / x
+
+# Visualize the data
+
+plt.figure(figsize=(8, 6))
+
+plt.scatter(x, y)
+
+plt.title("Scatter Plot of Data")
+
+plt.xlabel("X")
+
+plt.ylabel("Y")
+
+plt.show()
+
+# Split the data into training and testing sets
+
+train_x, test_x, train_y, test_y = train_test_split(x, y, test_size=0.3)
+
+plt.scatter(train_x,train_y)
+
+plt.show()
+
+plt.scatter(test_x,test_y)
+
+plt.show()
+
+# Create and visualize a polynomial regression model for training data
+
+degree = 4 # Adjust the polynomial degree as needed
+
+train_model = np.poly1d(np.polyfit(train_x, train_y, degree))
+
+myline = np.linspace(0, 6, 200)
+
+plt.figure(figsize=(8, 6))
+
+plt.scatter(train_x, train_y)
+
+plt.plot(myline, train_model(myline))
+
+plt.title("Polynomial Regression Model (T
+
+raining Data)")
+
+plt.xlabel("X")
+
+plt.ylabel("Y")
+
+plt.show()
+
+# Calculate and print the R-squared score for the training data
+
+r2_train = r2_score(train_y, train_model(train_x))
+
+print("R-squared score for training data:", r2_train)
+
+# Create and visualize a polynomial regression model for testing data
+
+test_model = np.poly1d(np.polyfit(test_x, test_y, degree))
+
+plt.figure(figsize=(8, 6))
+
+plt.scatter(test_x, test_y)
+
+plt.plot(myline, test_model(myline))
+
+plt.title("Polynomial Regression Model (T
+
+esting Data)")
+
+plt.xlabel("X")
+
+plt.ylabel("Y")
+
+plt.show()
+
+# Calculate and print the R-squared score for the testing data
+
+r2_test = r2_score(test_y, test_model(test_x))
+
+print("R-squared score for testing data:", r2_test)
+
+# Make predictions using the model
+
+prediction = test_model(5)
+
+print("Prediction for x = 5:", prediction)
+
+
+
+PRATICAL 2A) Perform Data Loading, Feature selection (Principal Component
+
+analysis) and Feature Scoring and Ranking.
+
+import pandas as pd
+
+import matplotlib.pyplot as plt
+
+from sklearn.decomposition import PCA
+
+# Data Loading
+
+data = pd.read_csv("C:/Users/kamle/OneDrive/Desktop/ml/p2/data.csv")
+
+# Replace "data.csv" with
+
+your dataset file
+
+X = data.drop('target_column', axis=1) # Features
+
+y = data['target_column'] # Target variable (if applicable)
+
+# Feature Selection using PCA
+
+pca = PCA()
+
+pca.fit(X)
+
+explained_var_ratio = pca.explained_variance_ratio_
+
+# Plot the explained variance to decide on the number of components to keep
+
+plt.plot(range(1, len(explained_var_ratio) + 1), explained_var_ratio.cumsum())
+
+plt.xlabel('Number of Components')
+
+plt.ylabel('Explained V
+
+ariance')
+
+plt.show()
+
+# Choose the number of components that explain most of the variance
+
+num_components = 5 # Adjust as needed
+
+# Transform the data with the selected number of components
+
+pca = PCA(n_components=num_components)
+
+X_pca = pca.fit_transform(X)
+
+# Feature Scoring and Ranking
+
+loadings = pca.components_
+
+feature_scores = abs(loadings).mean(axis=0) # Use mean absolute loading values
+
+# Create a DataFrame to display feature scores
+
+feature_scores_df = pd.DataFrame({'Feature': X.columns, 'Score': feature_scores})
+
+# Sort features by score in descending order
+
+feature_scores_df = feature_scores_df.sort_values(by='Score', ascending=False)
+
+# Display the ranked features
+
+print(feature_scores_df)
+
+
+
+PRATICAL 2B) For a given set of training data examples stored in a .CSV file,
+implement and demonstrate the CandidateElimination algorithm to output a
+description of the set of all hypotheses consistent with the training examples
+.
+import numpy as np
+import pandas as pd
+# Loading Data from a CSV File
+data = pd.DataFrame(data=pd.read_csv('C:/Users/kamle/OneDrive/Desktop/ml/p2/trainingData.csv'))
+print(data)
+# Separating concept features from Target
+concepts = np.array(data.iloc[:,0:-1])
+print(concepts)
+# Isolating target into a separate DataFrame
+# copying last column to target array
+target = np.array(data.iloc[:,-1])
+print(tar
+get)
+def learn(concepts, target):
+'''
+learn() function implements the learning method of the Candidate elimination algorithm.
+Arguments:
+concepts - a data frame with all the features
+target - a data frame with corresponding output values
+'''
+# Initialise S0 with the first instance from concepts
+# .copy() makes sure a new list is created instead of just pointing to the same memory location
+specific_h = concepts[0].copy()
+print("\nInitialization of specific_h and general_h")
+print(specific_h)
+#h=["#" for i in range(0,5)]
+#print(h)
+general_h = [["?" for i in range(len(specific_h))] for i in range(len(specific_h))]
+print(general_h)
+# The learning iterations
+for i, h in enumerate(concepts):
+# Checking if the hypothesis has a positive target
+if target[i] == "Yes":
+for x in range(len(specific_h)):
+# Change values in S & G only if values change
+if h[x] != specific_h[x]:
+specific_h[x] = '?'
+general_h[x][x] = '?'
+# Checking if the hypothesis has a positive target
+if target[i] == "No":
+for x in range(len(specific_h)):
+
+# For negative hyposthesis change values only in G
+
+if h[x] != specific_h[x]:
+
+general_h[x][x] = specific_h[x]
+
+else:
+
+general_h[x][x] = '?'
+
+print("\nSteps of Candidate Elimination Algorithm",i+1)
+
+print(specific_h)
+
+print(general_h)
+
+# find indices where we have empty rows, meaning those that are unchanged
+
+indices = [i for i, val in enumerate(general_h) if val == ['?', '?', '?', '?', '?', '?']]
+
+for i in indices:
+
+# remove those rows from general_h
+
+general_h.remove(['?', '?', '?', '?', '?', '?'])
+
+# Return final values
+
+return specific_h, general_h
+
+s_final, g_final = learn(concepts, target)
+
+print("\nFinal Specific_h:", s_final, sep="\n")
+
+print("\nFinal General_h:", g_final, sep="\n")
+
+
+PRATICAL 3A) Write a program to implement the naïve Bayesian classifier for a
+sample training data set stored as a .CSV file. Compute the accuracy of the
+classifier, considering few test data sets.
+# import necessary libarities
+import pandas as pd
+from sklearn import tree
+from sklearn.preprocessing import LabelEncoder
+from sklearn.naive_bayes import GaussianNB
+# load data from CSV
+data = pd.read_csv("C:/Users/kamle/OneDrive/Desktop/ml/p3/trainingData.csv")
+print("THe first 5 values of data is :\n",data.head())
+# obtain Train data and Train output
+X = data.iloc[:,:-1]
+print("\nThe First 5 values of train data is\n",X.head())
+y = data.iloc[:,-1]
+print("\nThe first 5 values of T
+rain output is\n",y.head())
+# Convert then in numbers
+le_outlook = LabelEncoder()
+X.Outlook = le_outlook.fit_transform(X.Outlook)
+le_Temperature = LabelEncoder()
+X.Temperature = le_Temperature.fit_transform(X.Temperature)
+le_Humidity = LabelEncoder()
+X.Humidity = le_Humidity.fit_transform(X.Humidity)
+le_Windy = LabelEncoder()
+X.Windy = le_Windy.fit_transform(X.Windy)
+print("\nNow the T
+rain data is :\n",X.head())
+le_PlayTennis = LabelEncoder()
+y = le_PlayTennis.fit_transform(y)
+print("\nNow the T
+rain output is\n",y)
+from sklearn.model_selection import train_test_split
+X_train, X_test, y_train, y_test = train_test_split(X,y, test_size=0.20)
+classifier = GaussianNB()
+classifier.fit(X_train,y_train)
+from sklearn.metrics import accuracy_score
+print("Accuracy is:",accuracy_score(classifier
+.predict(X_test),y_test))
+
+
+PRATICAL 3B) Write a program to implement Decision Tree and Random forest
+
+with Prediction, Test Score and Confusion Matrix.
+
+# Import pandas library
+
+import pandas as pd
+
+# Loading dataset
+
+df = pd.read_csv("C:/Users/kamle/OneDrive/Desktop/ml/p3/diabetes_dataset.csv")
+
+df.head()
+
+# Feature variables
+
+x = df.drop(['Outcome'], axis=1)
+
+# Target variable
+
+y = df.Outcome
+
+from sklearn.tree import DecisionTreeClassifier
+
+from sklearn.model_selection import train_test_split
+
+# Split the dataset
+
+x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=42)
+
+# Create Decision Tree classifier object
+
+model = DecisionTreeClassifier()
+
+# Train Decision Tree Classifier
+
+model.fit(x_train, y_train)
+
+# Predict the response for the test dataset
+
+y_pred = model.predict(x_test)
+
+# Evaluation using Accuracy score
+
+from sklearn import metrics
+
+print("Accuracy:", metrics.accuracy_score(y_test, y_pred) * 100)
+
+# Evaluation using Confusion matrix
+
+from sklearn.metrics import confusion_matrix
+
+cm = confusion_matrix(y_test, y_pred)
+
+print("Confusion Matrix:")
+
+print(cm)
+
+# Accuracy calculation from Confusion matrix
+
+accuracy = (cm[0, 0] + cm[1, 1]) / sum(sum(cm))
+
+print("Accuracy from Confusion Matrix:", accuracy * 100)
+
+# Evaluation using Classification report
+
+from sklearn.metrics import classification_report
+
+print("Classification Report:")
+
+print(classification_report(y_test, y_pred))
+
+# Checking prediction value
+prediction = model.predict([[6, 148, 72, 35, 0, 33.6, 0.627, 50]])
+print("Prediction for input:", prediction)
+# Import modules for Visualizing Decision trees
+from sklearn.tree import export_graphviz
+from sklearn.tree import plot_tree
+import matplotlib.pyplot as plt
+# Visualizing Decision Tree
+plt.figure(figsize=(20, 10))
+plot_tree(model, feature_names=x.columns, class_names=['0', '1'], filled=T
+rue, rounded=True)
+plt.show()
+# Create Decision Tree classifier object with entropy and max_depth
+model = DecisionTreeClassifier(criterion="entropy", max_depth=3)
+# Train Decision Tree Classifier
+model.fit(x_train, y_train)
+# Predict the response for the test dataset
+y_pred = model.predict(x_test)
+# Model Accuracy
+print("Accuracy:", metrics.accuracy_score(y_test, y_pred) * 100)
+# Better Decision Tree Visualization
+plt.figure(figsize=(20, 10))
+plot_tree(model, feature_names=x.columns, class_names=['0', '1'], filled=T
+rue, rounded=True)
+plt.show()
+
+
+
+PRATICAL 4A) For a given set of training data examples stored in a .CSV file
+
+implement Least Square Regression algorithm.
+
+# Importing Libraries
+
+import numpy as np
+
+import pandas as pd
+
+import matplotlib.pyplot as plt
+
+# Set the plot size
+
+plt.rcParams['figure.figsize'] = (12.0, 9.0)
+
+# Preprocessing Input Data
+
+data = pd.read_csv('C:/Users/kamle/Downloads/ML/prac4/data.csv')
+
+# Extracting the features X and Y
+
+X = data.iloc[:, 0].values
+
+Y = data.iloc[:, 1].values
+
+# Plotting the data points
+
+plt.scatter(X, Y)
+
+plt.xlabel('X')
+
+plt.ylabel('Y')
+
+plt.title('Scatter Plot of Data')
+
+plt.show()
+
+# Building the model
+
+X_mean = np.mean(X)
+
+Y_mean = np.mean(Y)
+
+num = 0
+
+den = 0
+
+for i in range(len(X)):
+
+num += (X[i] - X_mean) * (Y[i] - Y_mean)
+
+den += (X[i] - X_mean) ** 2
+
+m = num / den
+
+c = Y_mean - m * X_mean
+
+print("Slope (m):", m)
+
+print("Intercept (c):", c)
+
+# Making Predictions
+
+Y_pred = m * X + c
+
+# Plotting the regression line
+
+plt.scatter(X, Y
+
+, label='Actual Data')
+
+plt.plot(X, Y_pred, color='red', label='Regression Line')
+
+plt.xlabel('X')
+
+plt.ylabel('Y')
+plt.title('Linear Regression')
+plt.legend()
+plt.show()
+
+
+
+
+PRATICAL 4B) For a given set of training data examples stored in a .CSV file
+implement Logistic Regression algorithm.
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+import pandas as pd
+plt.style.use("ggplot")
+#matplotlib inline
+from pylab import rcParams
+rcParams['figure.figsize'] = 12, 8
+data = pd.read_csv("C:/Users/kamle/Downloads/ML/prac4/DMV_Written_Tests.csv")
+data.head()
+scores = data[['DMV_Test_1', 'DMV_Test_2']].values
+results = data['Results'].values
+passed = (results == 1).reshape(100, 1)
+failed = (results == 0).reshape(100, 1)
+ax = sns.scatterplot(x=scores[passed[:, 0], 0],
+y=scores[passed[:, 0], 1],
+marker="^",
+color="green",
+s=60)
+sns.scatterplot(x=scores[failed[:, 0], 0],
+y=scores[failed[:, 0], 1],
+marker="X",
+color="red",
+s=60)
+ax.set(xlabel="DMV Written Test 1 Scores", ylabel="DMV Written Test 2 Scores")
+ax.legend(["Passed", "Failed"])
+plt.show();
+def logistic_function(x):
+return 1 / (1 + np.exp(-x))
+logistic_function(0)
+def compute_cost(theta, x, y):
+m = len(y)
+y_pred = logistic_function(np.dot(x, theta))
+error = (y * np.log(y_pred)) + ((1 - y) * np.log(1 - y_pred))
+cost = -1 / m * sum(error)
+
+gradient = 1 / m * np.dot(x.transpose(), (y_pred - y))
+
+return cost[0], gradient
+
+mean_scores = np.mean(scores, axis=0)
+
+std_scores = np.std(scores, axis=0)
+
+scores = (scores - mean_scores) / std_scores # standardization
+
+rows = scores.shape[0]
+
+cols = scores.shape[1]
+
+X = np.append(np.ones((rows, 1)), scores, axis=1) # include intercept
+
+y = results.reshape(rows, 1)
+
+theta_init = np.zeros((cols + 1, 1))
+
+cost, gradient = compute_cost(theta_init, X, y)
+
+print("Cost at initialization", cost)
+
+print("Gradient at initialization:", gradient)
+
+def gradient_descent(x, y, theta, alpha, iterations):
+
+costs = []
+
+for i in range(iterations):
+
+cost, gradient = compute_cost(theta, x, y)
+
+theta -= (alpha * gradient)
+
+return theta, costs
+
+theta, costs = gradient_descent(X, y, theta_init, 1, 200)
+
+print("Theta after running gradient descent:", theta)
+
+plt.plot(costs)
+
+plt.xlabel("Iterations")
+
+plt.ylabel("$J(\\Theta)$")
+
+plt.title("V
+
+alues of Cost Function over iterations of Gradient Descent");
+
+sns.scatterplot(x=X[passed[:, 0], 1],
+
+y=X[passed[:, 0], 2],
+
+marker="^",
+
+color="green",
+
+s=60)
+
+ax = sns.scatterplot(x=X[failed[:, 0], 1],
+
+y=X[failed[:, 0], 2],
+
+marker="X",
+
+color="red",
+
+s=60)
+
+ax.legend(["Passed", "Failed"])
+
+ax.set(xlabel="DMV Written Test 1 Scores", ylabel="DMV Written Test 2 Scores")
+
+x_boundary = np.array([np.min(X[:, 1]), np.max(X[:, 1])])
+
+y_boundary = -(theta[0] + theta[1] * x_boundary) / theta[2]
+
+sns.lineplot(x=x_boundary, y=y_boundary, color="blue")
+
+plt.show();
+
+def predict(theta, x):
+
+results = x.dot(theta)
+
+return results > 0
+
+p = predict(theta, X)
+
+print("T
+
+raining Accuracy:", sum(p == y)[0], "%")
+
+test = np.array([50, 79])
+
+test = (test - mean_scores) / std_scores
+
+test = np.append(np.ones(1), test)
+
+probability = logistic_function(test.dot(theta))
+
+print("A person who scores 50 and 79 on their DMV written tests have a",
+
+np.round(probability[0], 2), "probability of passing.")
+
+
+
+PRATICAL 5A) Write a program to demonstrate the working of the decision tree
+based ID3 algorithm. Use an appropriate data set for building the decision tree and
+apply this knowledge to classify a new sample.
+import numpy as np
+import math
+import csv
+def read_data(filename):
+with open(filename, 'r') as csvfile:
+datareader = csv.reader(csvfile, delimiter=',')
+headers = next(datareader)
+metadata = []
+traindata = []
+for name in headers:
+metadata.append(name)
+for row in datareader:
+traindata.append(row)
+return (metadata, traindata)
+class Node:
+def __init__(self, attribute):
+self.attribute = attribute
+self.children = []
+self.answer = ""
+def __str__(self):
+return self.attribute
+def subtables(data, col, delete):
+dict = {}
+items, counts = np.unique(data[:, col], return_counts=True)
+for x in range(items.shape[0]):
+dict[items[x]] = data[data[:, col] == items[x]]
+if delete:
+dict[items[x]] = np.delete(dict[items[x]], col, 1)
+return items, dict
+def entropy(S):
+items, counts = np.unique(S, return_counts=True)
+total_size = S.size
+entropies = np.zeros(counts.shape)
+for x in range(items.shape[0]):
+
+ratio = counts[x] / total_size
+
+entropies[x] = ratio * math.log(ratio, 2)
+
+return -np.sum(entropies)
+
+def gain_ratio(data, col):
+
+items, dict = subtables(data, col, delete=False)
+
+total_size = data.shape[0]
+
+entropies = np.zeros((items.shape[0], 1))
+
+intrinsic = np.zeros((items.shape[0], 1))
+
+for x in range(items.shape[0]):
+
+ratio = dict[items[x]].shape[0] / total_size
+
+entropies[x] = ratio * entropy(dict[items[x]][:, -1])
+
+intrinsic[x] = ratio * math.log(ratio, 2)
+
+total_entropy = entropy(data[:, -1])
+
+iv = -np.sum(intrinsic)
+
+for x in range(entropies.shape[0]):
+
+total_entropy -= entropies[x]
+
+return total_entropy / iv
+
+def create_node(data, metadata):
+
+if data.size == 0:
+
+node = Node("")
+
+node.answer = "No data"
+
+return node
+
+if (np.unique(data[:, -1])).shape[0] == 1:
+
+node = Node("")
+
+node.answer = np.unique(data[:, -1])[0]
+
+return node
+
+gains = np.zeros((data.shape[1] - 1, 1))
+
+for col in range(data.shape[1] - 1):
+
+gains[col] = gain_ratio(data, col)
+
+split = np.argmax(gains)
+
+node = Node(metadata[split])
+
+metadata = np.delete(metadata, split, 0)
+
+items, dict = subtables(data, split, delete=True)
+
+for x in range(items.shape[0]):
+
+child = create_node(dict[items[x]], metadata)
+
+node.children.append((items[x], child))
+
+return node
+
+def empty(size):
+
+s = ""
+
+for x in range(size):
+
+s += " "
+
+return s
+
+def print_tree(node, level):
+
+if node.answer != "":
+
+print(empty(level), "Answer:", node.answer)
+
+return
+
+print(empty(level), "Attribute:", node.attribute)
+
+for value, n in node.children:
+
+print(empty(level + 1), f"V
+
+alue: {value}")
+
+print_tree(n, level + 2)
+
+metadata, traindata = read_data("C:/Users/kamle/Downloads/ML/prac5/tennisdata.csv")
+
+data = np.array(traindata)
+
+node = create_node(data, metadata)
+
+print_tree(node, 0)
+
+
+PRATICAL 5B) Write a program to implement k-Nearest Neighbour algorithm to
+
+classify the iris data set.
+
+from sklearn.model_selection import train_test_split
+
+from sklearn.neighbors import KNeighborsClassifier
+
+from sklearn import datasets
+
+iris=datasets.load_iris()
+
+print("Iris Data set loaded...")
+
+x_train, x_test, y_train, y_test = train_test_split(iris.data,iris.target,test_size=0.1)
+
+#random_state=0
+
+for i in range(len(iris.target_names)):
+
+print("Label", i , "-",str(iris.tar
+
+get_names[i]))
+
+classifier = KNeighborsClassifier(n_neighbors=2)
+
+classifier.fit(x_train, y_train)
+
+y_pred=classifier.predict(x_test)
+
+print("Results of Classification using K-nn with K=1 ")
+
+for r in range(0,len(x_test)):
+
+print(" Sample:", str(x_test[r]), " Actual-label:", str(y_test[r])," Predicted-label:", str(y_pred[r]))
+
+print("Classification Accuracy :" , classifier
+
+.score(x_test,y_test));
+
+
+PRATICAL 6A) Implement the different Distance methods (Euclidean) with
+Prediction, Test Score and Confusion Matrix.
+# Importing the libraries
+import numpy as np
+import matplotlib.pyplot as plt
+import pandas as pd
+# Importing the dataset
+dataset = pd.read_csv('C:/Users/kamle/Downloads/ML/prac6/Social_Network_Ads.csv')
+X = dataset.iloc[:, [2, 3]].values
+y = dataset.iloc[:, -1].values
+# Splitting the dataset into the Training set and Test set
+from sklearn.model_selection import train_test_split
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.20, random_state=0)
+# Feature Scaling
+from sklearn.preprocessing import StandardScaler
+sc = StandardScaler()
+X_train = sc.fit_transform(X_train)
+X_test = sc.transform(X_test)
+
+# Training the K-NN model on the Training set
+from sklearn.neighbors import KNeighborsClassifier
+classifier = KNeighborsClassifier(n_neighbors=5, metric='minkowski', p=2)
+classifier.fit(X_train, y_train)
+# Predicting the Test set results
+y_pred = classifier.predict(X_test)
+# Making the Confusion Matrix
+from sklearn.metrics import confusion_matrix, accuracy_score
+cm = confusion_matrix(y_test, y_pred)
+ac = accuracy_score(y_test, y_pred)
+# Print the results
+print("Confusion Matrix:")
+print(cm)
+print("\nAccuracy Score:", ac)
+
+
+
+
+PRATICAL 6B) Implement the classification model using clustering for the
+
+following techniques with K means clustering with Prediction, Test Score and
+
+Confusion Matrix
+
+# read in the iris data
+
+from sklearn.datasets import load_iris
+
+iris = load_iris()
+
+# create X (features) and y (response)
+
+X = iris.data
+
+y = iris.target
+
+# Import the class
+
+from sklearn.linear_model import LogisticRegression
+
+# instantiate the model (using the default parameters)
+
+logreg = LogisticRegression()
+
+# fit the model with data
+
+logreg.fit(X, y)
+
+# predict the response values for the observations in X
+
+logreg.predict(X)
+
+# Store the predicted response values
+
+y_pred = logreg.predict(X)
+
+# Check how many Predictions were generated
+
+len(y_pred)
+
+# Computer classification accuracy for the logistic regression model
+
+from sklearn import metrics
+
+print(metrics.accuracy_score(y
+
+, y_pred))
+
+from sklearn.neighbors import KNeighborsClassifier
+
+knn = KNeighborsClassifier(n_neighbors=5)
+
+knn.fit(X, y)
+
+y_pred = knn.predict(X)
+
+print(metrics.accuracy_score(y
+
+, y_pred))
+
+knn = KNeighborsClassifier(n_neighbors=1)
+
+knn.fit(X, y)
+
+y_pred = knn.predict(X)
+
+print(metrics.accuracy_score(y
+
+, y_pred))
+
+# print the shapes of X and y
+
+# X is our features matrix with 150 x 4 dimensions
+
+print(X.shape)
+
+# y is our response vector with 150 x 1 dimension
+
+print(y
+
+.shape)
+
+# STEP 1: split X and y into training and testing sets
+
+from sklearn.model_selection import train_test_split
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.4, random_state=4)
+
+# print the shapes of the new X objects
+
+print(X_train.shape)
+
+print(X_test.shape)
+
+# print the shapes of the new y objects
+
+print(y_train.shape)
+
+print(y_test.shape)
+
+# STEP 2: train the model on the training set
+
+logreg = LogisticRegression()
+
+logreg.fit(X_train, y_train)
+
+# STEP 3: make predictions on the testing set
+
+y_pred = logreg.predict(X_test)
+
+# Computer actual response values (y_test) with predicted response values (y_pred)
+
+print(metrics.accuracy_score(y_test, y_pred))
+
+knn = KNeighborsClassifier(n_neighbors=5)
+
+
+knn.fit(X_train, y_train)
+
+y_pred = knn.predict(X_test)
+
+print(metrics.accuracy_score(y_test, y_pred))
+
+# try k-1 through k-25 and record testing accuracy
+
+k_range = range(1, 26)
+
+# we can create python dictionary using [] or dict()
+
+scores = []
+
+# we use a loop through the range 1 to 26
+
+# we append the scores in the dictionary
+
+for k in k_range:
+
+knn = KNeighborsClassifier(n_neighbors=k)
+
+knn.fit(X_train, y_train)
+
+y_pred = knn.predict(X_test)
+
+scores.append(metrics.accuracy_score(y_test, y_pred))
+
+print(scores)
+
+# import Matplotlib (scientific plotting library)
+
+import matplotlib.pyplot as plt
+
+# plot the relationship between k and testing accuracy
+
+plt.plot(k_range, scores)
+
+plt.xlabel('V
+
+alue of k for KNN')
+
+plt.ylabel('T
+
+esting Accuracy')
+
+# instantiate the model with the best-known parameters
+
+knn = KNeighborsClassifier(n_neighbors=11)
+
+# train the model with X and y (not X_train and y_train)
+
+knn.fit(X, y)
+
+# make a prediction for an out-of-sample observation
+
+knn.predict([[3, 5, 4, 3]])
+
+
+PRATICAL 7A) Implement the classification model using clustering for the
+
+following techniques with hierarchical clustering with Prediction, Test Score and
+
+Confusion Matrix.
+
+import matplotlib.pyplot as plt
+
+import pandas as pd
+
+import scipy.cluster.hierarchy as sch
+
+from sklearn.cluster import AgglomerativeClustering
+
+dataset = pd.read_csv('C:/Users/kamle/Downloads/ML/prac7/abalone_csv.csv')
+
+X = dataset.iloc[:, [3, 4]].values
+
+# Dendrogram
+
+dendrogram = sch.dendrogram(sch.linkage(X, method="ward"))
+
+plt.title('Dendrogram')
+
+plt.xlabel('Sample Index')
+
+plt.ylabel('Euclidean Distances')
+
+plt.show()
+
+# Hierarchical Clustering
+
+
+hc = AgglomerativeClustering(n_clusters=5, affinity='euclidean', linkage='ward')
+y_hc = hc.fit_predict(X)
+print("Prediction V
+alues: ", y_hc)
+# Scatter Plot
+plt.scatter(X[y_hc == 0, 0], X[y_hc == 0, 1], s=100, c='red', label='Cluster 1')
+plt.scatter(X[y_hc == 1, 0], X[y_hc == 1, 1], s=100, c='blue', label='Cluster 2')
+plt.scatter(X[y_hc == 2, 0], X[y_hc == 2, 1], s=100, c='green', label='Cluster 3')
+plt.scatter(X[y_hc == 3, 0], X[y_hc == 3, 1], s=100, c='cyan', label='Cluster 4')
+plt.scatter(X[y_hc == 4, 0], X[y_hc == 4, 1], s=100, c='magenta', label='Cluster 5')
+# Plot Settings
+plt.title('Clusters of Abalones (Hierarchical Clustering Model)')
+plt.xlabel('Annual income (k$)') # Update with appropriate label
+plt.ylabel('Spending score(1 to 100)') # Update with appropriate label
+plt.legend()
+plt.show()
+
+
+
+PRATICAL 7B) Perform Text pre-processing, Text clustering, classification with
+
+Prediction, Test Score and Confusion Matrix.
+
+import numpy as np
+
+import matplotlib.pyplot as plt
+
+import pandas as pd
+
+# csv_file = 'Restaurant_Reviews.tsv'
+
+csv_file = 'C:/Users/kamle/Downloads/ML/prac7/Restaurant_Reviews.tsv'
+
+dataset = pd.read_csv(csv_file, delimiter='\t', quoting=3)
+
+# Text preprocessing using Natural Language Toolkit (nltk)
+
+import re
+
+import nltk
+
+nltk.download('stopwords')
+
+from nltk.corpus import stopwords
+
+from nltk.stem.porter import PorterStemmer
+
+corpus = []
+
+for i in range(0, 1000):
+
+review = re.sub('[^a-zA-Z]', '', dataset['Review'][i]) # Remove non-alphabetic characters
+
+review = review.lower() # Convert to lowercase
+
+review = review.split() # Tokenize the words
+
+ps = PorterStemmer() # Stemming and removing stopwords
+
+review = [ps.stem(word) for word in review if not word in set(stopwords.words('english'))]
+
+# Join the words to form the processed review
+
+review = ' '.join(review)
+
+corpus.append(review)
+
+# Creating the bag of words model
+
+from sklearn.feature_extraction.text import CountVectorizer
+
+cv = CountVectorizer(max_features=1500)
+
+X = cv.fit_transform(corpus).toarray()
+
+Y = dataset.iloc[:, 1].values
+
+# Splitting the dataset into the training set and test set
+
+from sklearn.model_selection import train_test_split
+
+X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=0.25, random_state=100)
+
+# Fitting Naive Bayes to the training set
+
+from sklearn.naive_bayes import GaussianNB
+
+classifier = GaussianNB()
+
+classifier.fit(X_train, Y_train)
+
+# Predicting the test set results
+
+Y_pred = classifier.predict(X_test)
+
+# Model Accuracy
+
+from sklearn import metrics
+
+from sklearn.metrics import confusion_matrix
+
+print("Accuracy:", metrics.accuracy_score(Y_test, Y_pred))
+
+# Making the confusion matrix
+
+from sklearn.metrics import confusion_matrix
+
+cm = confusion_matrix(Y_test, Y_pred)
+
+print(cm)
+
+
+
+
+
