@@ -1,0 +1,1243 @@
+PRACTICAL -1 WRITE THE FOLLOWING PROGRAMS FOR BLOCKCHAIN IN PYTHON
+A) A simple client class that generates the private and public keys by using the built-in Python RSA algorithm and test it.
+import binascii
+import Crypto from Crypto.PublicKey import RSA from Crypto.Signature import PKCS1_v1_5
+class Client:
+  def init(self)
+    random = Crypto.Random.new().read
+    self._private_key = RSA.generate(1024, random)
+    self._public_key = self._private_key.publickey()
+    self._signer = PKCS1_v1_5.new(self._private_key)
+  @property
+  def identity(self)
+    return
+binascii.hexlify(self._public_key.exportKey(format="DER")).decode(
+      "ascii"     )
+Dinesh = Client()
+print("\n Public Key:",Dinesh.identity)
+
+
+
+B) A transaction class to send and receive money and test it.
+import binascii import collections import datetime from client import Client from Crypto.Hash import SHA from Crypto.Signature import PKCS1_v1_5
+class Transaction:
+  def init(self, sender, recipient, value)
+    self.sender = sender
+    self.recipient = recipient
+    self.value = value
+    self.time = datetime.datetime.now()
+  def to_dict(self)
+    identity = "Genesis" if self.sender	"Genesis" else self.sender.identity
+    return collections.OrderedDict(
+      {
+        "sender": identity,
+        "recipient": self.recipient,
+        "value": self.value,
+        "time": self.time,
+      }
+    )
+  def sign_transaction(self)
+    private_key = self.sender._private_key
+    signer = PKCS1_v1_5.new(private_key)
+    h = SHA.new(str(self.to_dict()).encode("utf8"))
+    return binascii.hexlify(signer.sign(h)).decode("ascii")
+Dinesh = Client() Ramesh = Client()
+t = Transaction(Dinesh, Ramesh.identity, 5.0) print("\nTransaction Recipient:\n", t.recipient) # print("\nTransaction Sender:\n", t.sender) print("\nTransaction Value:\n", t.value)
+signature = t.sign_transaction() print("\nSignature:\n", signature)
+
+
+C) Create multiple transactions and display them.
+from client import Client from transaction_class import Transaction
+Dinesh = Client() Ramesh = Client()
+t = Transaction(Dinesh, Ramesh.identity, 5.0) print("\nTransaction Recipient:\n", t.recipient) # print("\nTransaction Sender:\n", t.sender) print("\nTransaction Value:\n", t.value)
+signature = t.sign_transaction() print("\nSignature:\n", signature)
+Dinesh = Client()
+Ramesh = Client()
+Seema = Client() Vijay = Client()
+t1 = Transaction(Dinesh, Ramesh.identity, 15.0)
+t1.sign_transaction() transactions = [t1]
+t2 = Transaction(Dinesh, Seema.identity, 6.0)
+t2.sign_transaction() transactions.append(t2)
+t3 = Transaction(Ramesh, Vijay.identity, 2.0)
+t3.sign_transaction() transactions.append(t3)
+t4 = Transaction(Seema, Ramesh.identity, 4.0)
+t4.sign_transaction() transactions.append(t4)
+for transaction in transactions:
+  Transaction.display_transaction(transaction)
+  print("	")
+
+
+
+
+D) Create a blockchain, a genesis block and execute it.
+from client import Client from transaction_class import Transaction
+class Block:
+  def init(self, client)
+    self.verif ed_transactions = []
+    self.previous_block_hash = ""
+    self.Nonce = ""     self.client = client
+def dump_blockchain(blocks)
+  print(f"\nNumber of blocks in the chain: {len(blocks)}")
+  for i, block in enumerate(blocks)
+    print(f"block # {i}")
+    for transaction in block.verif ed_transactions:
+      Transaction.display_transaction(transaction)
+      print("	")
+  print("	")
+Dinesh = Client() t0 = Transaction("Genesis", Dinesh.identity(), 500.0)
+block0 = Block(Dinesh) block0.previous_block_hash = "" NONCE = None
+block0.verif ed_transactions.append(t0)
+digest = hash(block0) last_block_hash = digest
+TPCoins = [block0] dump_blockchain(TPCoins)
+
+
+E) Create a mining function and test it.
+import hashlib
+def sha256(message)
+  return hashlib.sha256(message.encode("ascii")).hexdigest()
+def mine(message, diff culty=1)
+  assert diff culty	1
+  pref x = "1" * diff culty
+  for i in range(1000)
+    digest = sha256(str(hash(message)) + str(i))
+    if digest.startswith(pref x)
+      print(f"after {str(i)} iterations found nonce: {digest}")
+      # return print(digest) mine("test message",2)
+
+
+
+F) Add blocks to the miner and dump the blockchain.
+import datetime import hashlib
+# Create a class with two functions
+class Block:
+  def init(self, data, previous_hash)
+    self.timestamp = datetime.datetime.now(datetime.timezone.utc)
+    self.data = data
+    self.previous_hash = previous_hash
+    self.hash = self.calc_hash()
+  def calc_hash(self)
+    sha = hashlib.sha256()
+    hash_str = self.data.encode("utf-8")
+    sha.update(hash_str)
+    return sha.hexdigest()
+# Instantiate the class blockchain = [Block("First block", "0")]
+blockchain.append(Block("Second block", blockchain[0].hash)) blockchain.append(Block("Third block", blockchain[1].hash))
+# Dumping the blockchain
+for block in blockchain:
+  print(
+    f"Timestamp: {block.timestamp}\nData: {block.data}\nPrevious Hash:
+{block.previous_hash}\nHash: {block.hash}\n"
+  )
+
+
+PRACTICAL-2 INSTALL AND CONFIGURE GO ETHEREUM AND THE
+MIST BROWSER. DEVELOP AND TEST A SAMPLE
+APPLICATION(METAMASK & REMIX)
+Step 1->Install MetaMask extension for chrome from Chrome Web Store
+
+
+
+
+Step 2-> Click on Metamask Extension in Extensions. Below page will open in a new tab. Click on Create a New Wallet. Click on I agree.
+
+
+3-> Create a password. This password can be used only on the device it was created on. Create a Strong password and click on Create a new Wallet button
+
+
+Step4->	Click on Secure my wallet button, following window will appear
+
+Step 5-> Click on Reveal Secret Recovery Phrase button and save the words in the same sequence
+
+	6->	Enter the respective words in the empty positions and click Confirm.
+
+
+Step 7->	Click Got it!
+
+	Step 8->	Click on Next
+
+Step 9->	Following will be the Dashboard
+
+Step 10-> Click on Ethereum Mainnet button. Next click on Show/hide test networks.
+
+
+Step 11-> Check if tesnets are shown by clicking on Etherum Mainnet button. Click on Sepolia test network.
+
+Step 12-> Go to https://sepoliafaucet.com/ and Click on Alchemy Login button.
+
+Step 13-> Login to a gmail account in another browser tab and click on Sign in with Google
+
+Step 14-> Now go to MetaMask and copy the account address.
+
+
+Step 15-> Paste the address and click on Send Me ETH.
+Step 16-> Your ETH transfer is succesfull. You should see a similar animation.
+
+Step 17-> Check your MetaMask account for Sepolia test network. 0.5 ETH will be added.
+
+
+
+
+PRACTICAL-3 IMPLEMENT AND DEMONSTRATE THE USE OF THE FOLLOWING IN SOLIDITY
+TO EXECUTE SOLIDITY SCRIPTS GO TO  
+=>HTTPS://REMIX.ETHEREUM.ORG/
+OPEN CONTRACTS FOLDER AND STARTING WRITING SCRIPTS. THE SCRIPTS ARE COMPILED USING SOLIDITY COMPILER.
+THE FOLLOWING SCRIPTS WERE COMPILED USING 0.5.0+COMMIT.1D4F565A SOLIDITY COMPILER
+DEPLOY THE SCRIPTS TO EXECUTE CODE
+A)Variable, Operators, Loops, Decision Making, Strings, Arrays, Enums, Structs,
+Mappings, Conversions, Ether Units, Special Variables
+Variable
+pragma solidity ^0.5.0;
+
+
+
+contract variable_demo {
+
+  uint256 sum = 4; //state variable
+
+  uint256 x;
+
+  address a;
+
+  string s = "welcome";
+
+
+
+  function add(uint256) public {
+
+    uint256 y = 2; //local variable sum = sum+x+y:
+
+    sum = sum + x + y;
+
+  }
+
+
+
+  function display() public view returns (uint256) {
+
+    return sum;
+
+  }
+
+
+
+  function displayMsg() public view returns (string memory) {
+
+    return s;
+
+  }
+
+}
+Output:-
+
+
+FIGURE 1 -DISPLAYING VARIABLE VALUE
+
+
+2. Strings
+pragma solidity ^0.5.0;
+contract LearningStrings {
+string text;
+function getText() public view returns (string memory) {
+return text;
+}
+function setText() public {
+text = "hello";
+}
+function setTextByPassing(string memory message) public {
+text = message;
+}
+Output:-
+}
+
+FIGURE 2 - BEFORE SETTING NEW STRING VALUE
+
+
+
+FIGURE 3 - AFTER SETTING STRING VALUE
+
+
+3. Operators
+pragma solidity ^0.5.0;
+contract SolidityTest {
+uint16 public a = 20;
+uint16 public b = 10;
+uint256 public sum = a + b;
+uint256 public diff = a - b;
+uint256 public mul = a * b;
+uint256 public div = a / b;
+uint256 public mod = a % b;
+uint256 public dec = --b;
+uint256 public inc = ++a;
+}
+Output:-
+
+
+FIGURE 4 - ALL OPERATORS OF SOLIDITY DISPLAYED
+4. Array
+pragma solidity ^0.5.0;
+contract arraydemo
+{
+//Static Array
+uint[6] arr2=[10,20,30];
+function dispstaticarray() public view returns(uint[6] memory)
+{
+return arr2;
+}
+//Dynamic Array
+uint x=5;
+uint [] arr1;
+function arrayDemo() public
+{
+while(x>0)
+{
+arr1.push(x);
+x=x-1;
+}
+}
+function dispdynamicarray() public view returns(uint[] memory)
+{
+return arr1;
+}
+} 
+Output:-
+
+FIGURE 5 - ARRAY DISPLAYED
+
+
+5. Decision Making
+If Else
+pragma solidity ^0.5.0;
+contract ifelsedemo
+{
+uint i=10;
+function decision_making() public view returns(string memory)
+{
+if(i%2==0)
+{
+return "even";
+}
+else
+{
+return "Odd";
+}
+}
+Output:-
+
+FIGURE 6 - IF ELSE OUTPUT
+
+
+6. Loops
+For Loop
+pragma solidity ^0.5.0;
+contract loopDemo
+{
+uint [] data;
+function forDemo() public returns(uint[] memory)
+{
+for(uint i=0; i<10; i++){
+data.push(i);
+}
+return data;
+}
+function disp() public view returns(uint[] memory)
+{
+return data;
+}
+}
+
+Output:-
+
+FIGURE 7 - APPENDING VALUES TO ARRAY USING FOR LOOP
+
+
+While Loop
+pragma solidity ^0.5.0;
+contract whiledemo
+{
+uint [] data;
+uint x=0;
+function whileLoopDemo() public
+{
+while(x<5)
+{
+data.push(x);
+x=x+1;
+}
+}
+function dispwhileloop() public view returns(uint[] memory)
+{
+return data;
+}
+}
+Output:-
+
+FIGURE 8 - APPENDING VALUES TO ARRAY USING WHILE LOOP
+
+
+Do While
+pragma solidity ^0.5.0;
+// Creating a contract
+contract DoWhile {
+// Declaring a dynamic array
+uint256[] data;
+// Declaring state variable
+uint8 j = 0;
+// Defining function to demonstrate
+// 'Do-While loop'
+function loop() public returns (uint256[] memory) {
+do {
+j++;
+data.push(j);
+} while (j < 5);
+return data;
+}
+function display() public view returns(uint256[] memory){
+return data;
+}
+}
+Output:-
+
+
+FIGURE 9 APPENDING VALUES TO ARRAY USING DO WHILE LOOP
+
+
+7. Enums
+pragma solidity ^0.5.0;
+contract enumdemo {
+enum week_days {
+Monday,
+Tuesday,
+Wednesday,
+Thursday,
+Friday,
+Saturday,
+Sunday
+}
+week_days week;
+week_days choice;
+week_days constant default_value = week_days.Sunday;
+function set_value() public {
+choice = week_days.Tuesday;
+}
+function get_choice() public view returns (week_days) {
+return choice;
+}
+function get_defaultvalue() public view returns (week_days) {
+return default_value;
+}
+Output:-
+
+}
+
+FIGURE 10 - ACCESSING ENUM VALUES
+
+
+8. Structs
+pragma solidity ^0.5.0;
+contract structdemo {
+struct Book {
+string name;
+string author;
+uint256 id;
+bool availability;
+}
+Book book2;
+Book book1 = Book("A Little Life", "Hanya Yanagihara", 2, false);
+function set_details() public {
+book2 = Book("Almond", "Sohn won-pyung", 1, true);
+}
+function book_info()
+public
+view
+returns (
+string memory,
+string memory,
+uint256,
+bool
+)
+{
+return (book1.name, book1.author, book1.id, book1.availability);
+}
+function get_details()
+public
+view
+returns (
+string memory, string memory, uint256, bool
+)
+{
+return (book2.name, book2.author, book2.id, book2.availability);
+}
+}
+Output:-
+
+
+FIGURE 11- STRUCTURE DATATYPE IN SOLIDITY
+9. Mappings
+pragma solidity ^0.5.0;
+contract LedgerBalance {
+mapping(address => uint256) public balances;
+function updateBalance(uint256 newBalance) public {
+balances[msg.sender] = newBalance;
+}
+}
+contract Updater {
+function updateBalance() public returns (uint256) {
+LedgerBalance ledgerBalance = new LedgerBalance();
+return ledgerBalance.balances(address(this));
+}
+}
+Output:-
+
+FIGURE 12 - BEFORE UPDATING BALANCE
+
+
+FIGURE 13 - AFTER UPDATING BALANCE
+
+
+
+10.Conversions
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+contract ImplicitConversion {
+function add() public pure returns (uint256) {
+uint256 a = 10;
+uint256 b = 20;
+return a + b;
+}
+}
+contract ExplicitConversion {
+function convert() public pure returns (bytes memory) {
+string memory str = "Hello World";
+bytes memory b = bytes(str);
+return b;
+}
+}
+Step 1->	Deploy both contracts
+
+Step 2-> Open Implicit Conversion and click on add button to sum and display value
+
+Step 3->	Open Explicit Conversion and click on convert button
+
+
+
+11.Ether Units
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+contract SolidityTest {
+function convert_Amount_to_Wei(uint256 Amount)
+public
+pure
+returns (uint256)
+{
+return Amount * 1 wei;
+}
+function convert_Amount_To_Ether(uint256 Amount)
+public
+pure
+returns (uint256)
+{
+return Amount * 1 ether;
+}
+function convert_Amount_To_Gwei(uint256 Amount)
+public
+pure
+returns (uint256)
+{
+return Amount * 1 gwei;
+}
+function convert_seconds_To_mins(uint256 _seconds)
+public
+pure
+returns (uint256)
+{
+return _seconds / 60;
+}
+function convert_seconds_To_Hours(uint256 _seconds)
+public
+pure
+returns (uint256)
+{
+return _seconds / 3600;
+}
+function convert_Mins_To_Seconds(uint256 _mins)
+public
+pure
+returns (uint256)
+{
+return _mins * 60;
+}
+}
+
+
+Step 1->	Provide values to each function and click on them
+
+
+
+12.Special Variables
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+contract Special_Variables {
+mapping(address => uint256) rollNo;
+function setRollNO(uint256 _myNumber) public {
+rollNo[msg.sender] = _myNumber;
+}
+function whatIsMyRollNumber() public view returns (uint256) {
+return rollNo[msg.sender];
+}
+}
+Step 1-> Deploy contract Special Variables
+
+
+Step 2->	Input	a	number	for	setRollNO	function	and	click	on	it	& whatIsMyRollNumber button
+
+
+B)Functions, Function Modifiers, View functions, Pure Functions, Fallback Function,
+Function Overloading, Mathematical functions, Cryptographic functions
+1. View Functions
+pragma solidity ^0.5.0;
+contract view_demo {
+uint256 num1 = 2;
+uint256 num2 = 4;
+function getResult() public view returns (uint256 product, uint256 sum) {
+product = num1 * num2;
+sum = num1 + num2;
+}
+}
+
+
+FIGURE 14 - VIEW FUNCTION DEMO
+
+
+2. Pure Functions
+pragma solidity ^0.5.0;
+contract pure_demo {
+function getResult() public pure returns (uint256 product, uint256 sum) {
+uint256 num1 = 2;
+uint256 num2 = 4;
+product = num1 * num2;
+sum = num1 + num2;
+}
+}
+
+
+FIGURE 15 - PURE FUNCTION OUTPUT
+
+
+3. Mathematical Functions
+pragma solidity ^0.5.0;
+contract Test{
+function CallAddMod() public pure returns(uint){
+return addmod(7,3,3);
+}
+function CallMulMod() public pure returns(uint){
+return mulmod(7,3,3);
+}
+}
+
+
+FIGURE 16 - MATHEMATICAL FUNCTIONS IN SOLIDITY
+
+
+4. Cryptographic Functions
+pragma solidity ^0.5.0;
+contract Test{
+function callKeccak256() public pure returns(bytes32 result){
+return keccak256("BLOCKCHAIN");
+}
+function callsha256() public pure returns(bytes32 result){
+return sha256("BLOCKCHAIN");
+}
+function callripemd() public pure returns (bytes20 result){
+return ripemd160("BLOCKCHAIN");
+}
+}
+
+FIGURE 17 - CRYPTOGRAPHY ALGORITHMS IN SOLIDITY
+
+
+5. Functions
+// SPDX-License-Identifier: MIT
+pragma solidity >=0.4.22 <0.9.0;
+contract Test {
+function return_example()
+public
+pure
+returns (
+uint256,
+uint256,
+uint256,
+string memory
+)
+{
+uint256 num1 = 10;
+uint256 num2 = 16;
+uint256 sum = num1 + num2;
+uint256 prod = num1 * num2;
+uint256 diff = num2 - num1;
+string memory message = "Multiple return values";
+return (sum, prod, diff, message);
+}
+}
+Step 1-> Deploy Test Contract
+
+Step 2->	Click on return_example button to display all values
+
+
+
+6. Fallback Function
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.5.12;
+contract A {
+uint256 n;
+function set(uint256 value) external {
+n = value;
+}
+function() external payable {
+n = 0;
+}
+}
+contract example {
+function callA(A a) public returns (bool) {
+(bool success, ) = address(a).call(abi.encodeWithSignature("setter()"));
+require(success);
+address payable payableA = address(uint160(address(a)));
+return (payableA.send(2 ether));
+}
+}
+Step 1-> Deploy both A & example contracts
+
+Step 2->Provide values to both deployed contracts accordingly(use any address)
+
+
+
+7. Function Overloading
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+contract OverloadingExample {
+function add(uint256 a, uint256 b) public pure returns (uint256) {
+return a + b;
+}
+function add(string memory a, string memory b)
+public
+pure
+returns (string memory)
+{
+return string(abi.encodePacked(a, b));
+}
+}
+Step 1-> Deploy Overloading Example contract
+
+Step 2->Give integer and string values to both add functions as below
+
+
+
+8. Function modifiers
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.5.0;
+contract ExampleContract {
+address public owner = 0x5B38Da6a701c568545dCfcB03FcB875f56beddC4;
+uint256 public counter;
+modifier onlyowner() {
+require(msg.sender == owner, "Only the contract owner can call");
+_;
+}
+function incrementcounter() public onlyowner {
+counter++;
+}
+}
+
+Step 1->	Click on owner button
+
+Step 2->	Click on counter button initially it is 0.
+
+Step 3-> Then click on increment counter button and again click on counter button, the counter has been increased
+
+
+
+PRACTICAL-4 IMPLEMENT AND DEMONSTRATE THE USE OF THE
+FOLLOWING IN SOLIDITY
+A) Withdrawal Pattern, Restricted Access
+1) Withdrawal Pattern
+// SPDX-License-Identifier: MIT
+pragma solidity 0.8.18;
+contract WithdrawalPattern {
+address public owner;
+uint256 public lockedbalance;
+uint256 public withdrawablebalance;
+constructor() {
+owner = msg.sender;
+}
+modifier onlyowner() {
+require(msg.sender == owner, "Only the owner can call this function");
+_;
+}
+function deposit(uint256 amount) public payable {
+require(amount > 0, "Amount must be greater than zero");
+lockedbalance += amount;
+}
+function withdraw(uint256 amount) public payable onlyowner {
+require(
+amount <= withdrawablebalance,
+"Insufficient withdrawable balance"
+);
+withdrawablebalance -= amount;
+payable(msg.sender).transfer(amount);
+}
+function unlock(uint256 amount) public onlyowner {
+require(amount <= lockedbalance, "Insufficient locked balance");
+lockedbalance -= amount;
+withdrawablebalance += amount;
+}
+}
+
+
+
+Flow of execution
+Step 1->	Click on owner
+
+Step 2->	Enter an amount and click on deposit
+
+Step 3-> Click on locked balance button to display the locked amount in the account
+
+Step 4->
+Click on withdrawable balance button
+
+
+Step 5->	Click on unlock button and enter any amount to transfer amount to withdrawable balance. Check locked balance and withdrawable balance.
+
+
+
+Step 6->	Enter any amount you want to withdraw and Click the withdraw button. You should get an error and the transaction should be reverted.
+
+
+
+
+2) Restricted Access
+//SPDX-License-Identifier: MIT
+pragma solidity ^0.8.18;
+contract RestrictedAccess {
+address public owner = msg.sender;
+uint256 public creationTime = block.timestamp;
+modifier onlyBy(address _account) {
+require(msg.sender == _account, "Sender not authorized!");
+_;
+}
+modifier onlyAfter(uint256 _time) {
+require(block.timestamp >= _time, "Function was called too early!");
+_;
+}
+modifier costs(uint256 _amount) {
+require(msg.value >= _amount, "Not enough Ether provided!");
+_;
+}
+function forceOwnerChange(address _newOwner)
+public
+payable
+costs(200 ether)
+{
+owner = _newOwner;
+}
+function changeOwner(address _owner) public onlyBy(owner) {
+owner = _owner;
+}
+function disown() public onlyBy(owner) onlyAfter(creationTime + 3 weeks) {
+delete owner;
+}
+
+
+Flow of execution
+Step 1->	Click on owner to create an owner object
+
+Step 2->	Click on lastOwnerChange button
+
+Step 3->	Change the address of the account from Account dropdown in Deploy tab of Remix IDE.
+
+
+Step 4->	Copy the address
+
+Step 5->	Paste the address in changeOwner input and click on changeOwner.
+
+Step 6->	You should get an error as following
+
+Step 7->	If you click on buycontract it should give an error as follows
+
+Step 8->	Now, paste the actual address of the account in the changeowner input and click on changeowner
+
+
+
+B) Contracts, Inheritance, Constructors, Abstract Contracts, Interfaces
+1) Contracts
+pragma solidity ^0.5.0;
+contract Contract_demo {
+string message = "Hello";
+function dispMsg() public view returns (string memory) {
+return message;
+}
+}
+
+ 
+2) Inheritance
+pragma solidity >=0.4.22 <0.6.0;
+contract Parent {
+uint256 internal sum;
+function setValue() external {
+uint256 a = 10;
+uint256 b = 20;
+sum = a + b;
+}
+}
+contract child is Parent {
+function getValue() external view returns (uint256) {
+return sum;
+}
+}
+contract caller {
+child cc = new child();
+function testInheritance() public returns (uint256) {
+cc.setValue();
+return cc.getValue();
+}
+function show_value() public view returns (uint256) {
+return cc.getValue();
+}
+}
+
+
+Flow of execution
+Step 1->	Select caller contract to deploy in Contract and deploy
+
+Step 2->	Click test Inheritance and then click on show_value to view value
+
+3) Abstract Contracts
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.5.17;
+contract Calculator {
+function getResult() external view returns (uint256);
+}
+contract Test is Calculator {
+constructor() public {}
+function getResult() external view returns (uint256) {
+uint256 a = 1;
+uint256 b = 2;
+uint256 result = a + b;
+return result;
+}
+}
+
+Outputs:-
+Flow of execution
+Step 1->	Select Test contract and deploy
+
+
+Step 2->	The contact will deploy as below
+
+
+
+Step 3->	Click on getResult to get sum of a+b
+
+
+
+
+4) Constructors
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.5.0;
+// Creating a contract
+contract constructorExample {
+string str;
+constructor() public {
+str = "GeeksForGeeks";
+}
+function getValue() public view returns (string memory) {
+return str;
+}
+}
+
+
+Flow of execution
+Click on getValue to print string
+
+5) Interfaces
+pragma solidity ^0.5.0;
+interface Calculator {
+function getResult() external view returns(uint);
+}
+contract Test is Calculator {
+constructor() public {}
+function getResult() external view returns(uint){
+uint a = 1;
+uint b = 2;
+uint result = a + b;
+return result;
+}
+}
+Output:-
+Flow of execution
+
+Step 1->	Click on getResult to display sum
+
+
+
+
+C) Libraries, Assembly, Events, Error handling.
+1) Libraries
+myLib.sol Code
+// SPDX-License-Identifier: MIT
+pragma solidity >=0.7.0 <0.9.0;
+library myMathLib {
+function sum(uint256 a, uint256 b) public pure returns (uint256) {
+return a + b;
+}
+function exponent(uint256 a, uint256 b) public pure returns (uint256) {
+return a**b;
+}
+}
+using_library.sol Code
+// SPDX-License-Identifier: MIT
+pragma solidity >=0.7.0 <0.9.0;
+import "contracts/myLIB.sol";
+contract UseLib {
+function getsum(uint256 x, uint256 y) public pure returns (uint256) {
+return myMathLib.sum(x, y);
+}
+function getexponent(uint256 x, uint256 y) public pure returns (uint256) {
+return myMathLib.exponent(x, y);
+}
+}
+
+Flow of execution
+Step 1->	Change contract to UseLib and deploy.
+
+Step 2->	The deployed contract should be same as below
+
+Step 3->	Input values to both getexponent and getsum functions as below
+
+Step 4->	Execute both functions. You will get below output
+
+
+
+2) Assembly
+// SPDX-License-Identifier: GPL-3.0
+pragma solidity >=0.4.16 <0.9.0;
+contract InlineAssembly {
+// Defining function
+function add(uint256 a) public view returns (uint256 b) {
+assembly {
+let c := add(a, 16)
+mstore(0x80, c)
+{
+let d := add(sload(c), 12)
+b := d
+}
+b := add(b, c)
+}
+}
+}
+
+
+Flow of execution
+Step 1->	Input a number for add function
+
+Step 2->	Click add to output sum
+
+
+
+
+3) Events
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.5.0;
+// Creating a contract
+contract eventExample {
+// Declaring state variables
+uint256 public value = 0;
+// Declaring an event
+event Increment(address owner);
+// Defining a function for logging event
+function getValue(uint256 _a, uint256 _b) public {
+emit Increment(msg.sender);
+value = _a + _b;
+}
+}
+
+// SPDX-License-Identifier: MIT
+
+pragma solidity ^0.5.17;
+
+
+
+Flow of execution
+Step 1->	Provide values to getValue function and click on it.
+
+Step 2->	In the terminal check for logs
+
+4) Error Handling
+
+contract ErrorDemo {
+
+  function getSum(uint256 a, uint256 b) public pure returns (uint256) {
+
+    uint256 sum = a + b;
+
+    // require(sum < 255, "Invalid");
+
+    assert(sum<255);
+
+    return sum;
+
+  }
+
+}
+
+
+
+
+Flow of execution
+Step 1->	Provide some values and press on getSum
+
+Step 2->	Check terminal panel
+
+
+
+PRACTICAL-5 WRITE A PROGRAM TO DEMONSTRATE MINING OF ETHER
+const Web3 = require('web3');
+const web3 = new Web3(new
+Web3.providers.HttpProvider('http: /127.0.0.1:7545')); / Replace with your
+Ganache HTTP provider
+async function mine() {
+const accounts = await web3.eth.getAccounts();
+const coinbaseacc1 = accounts[0];
+const coinbaseacc2 = accounts[1];
+console.log(`Mining ether on Ganache with coinbase address:
+${coinbaseacc1}`);
+while (true) {
+try {
+await web3.eth.sendTransaction({
+from: coinbaseacc1,
+to: coinbaseacc2,
+value: 50,
+});
+console.log(`Mined a new block!`);
+} catch (err) {
+console.error(err);
+}
+}}mine();
+
+
+
+PRACTICAL-6 DEMONSTRATE THE RUNNING OF THE BLOCKCHAIN NODE
+Step 1-> Create a folder named ethermine and a JSON file named genesis.json and write the following lines in it.
+{
+"config": {
+"chainId": 3792,
+"homesteadBlock": 0,
+"eip150Block": 0,
+"eip155Block": 0,
+"eip158Block": 0
+},
+"difficulty": "2000",
+"gasLimit": "2100000",
+"alloc": {
+"0x0b6C4c81f58B8d692A7B46AD1e16a1147c25299F": {
+"balance": "9000000000000000000"
+}
+}
+}
+
+Step 2-> Run command geth account new –datadir
+C:\Users\Achsah\Documents\MScIT\sem4\blockchain_practical\ethermine
+testnet-blockchain
+
+
+Step 3-> Run command geth account new --datadir
+C:\Users\Achsah\Documents\MScIT\sem4\blockchain_practical\ethermine
+
+Step 4-> Run command geth --identity "localB" --http --http.port "8280"
+--http.corsdomain "*" --http.api "db,eth,net,web3" --datadir
+"C:\Users\Achsah\Documents\MScIT\sem4\blockchain_practical\ethermine"
+--port "30303" --nodiscover --networkid 5777 console. This command will
+enable geth console.
+
+Step 5-> Run the command
+miner.setEtherbase('0xC050FE4d9bAc591d29538e2FD9cCA848B29489D0’)
+in the geth console
+Step 6-> Run the command miner.start() to start mining
+
+
+
+
+Step 7-> Below screenshots are the mining processes running on your local
+machine.
+
+Step 8->	To stop the mining press Ctrl+D
+
+
+PRACTICAL-7 CREATE YOUR OWN BLOCKCHAIN AND DEMONSTRATE
+ITS USE
+Create a javascript folder with the following code in any folder of your choice.
+JavaScript Code
+const SHA256 = require("crypto-js/sha256");
+class Block {
+constructor(index, timestamp, data, previousHash = "") {
+this.index = index;
+this.timestamp = timestamp;
+this.data = data;
+this.previousHash = previousHash;
+this.hash = this.calculateHash();
+}
+calculateHash() {
+return SHA256(
+this.index +
+this.previousHash +
+this.timestamp +
+JSON.stringify(this.data)
+).toString();
+}
+}
+class Blockchain {
+constructor() {
+this.chain = [this.createGenesisBlock()];
+}
+createGenesisBlock() {
+return new Block(0, "21/04/2023", "Genesis Block", "0");
+}
+getLatestBlock() {
+return this.chain[this.chain.length - 1];
+}
+addBlock(newBlock) {
+newBlock.previousHash = this.getLatestBlock().hash;
+newBlock.hash = newBlock.calculateHash();
+this.chain.push(newBlock);
+}
+isChainValid() {
+for (let i = 1; i < this.chain.length; i +) {
+const currentBlock = this.chain[i];
+const previousBlock = this.chain[i - 1];
+if (currentBlock.hash = currentBlock.calculateHash()) {
+return false;
+}
+if (currentBlock.previousHash = previousBlock.hash) {
+return false;
+}
+}
+return true;
+}
+}
+/Blockchain Implementation
+let myCoin = new Blockchain();
+myCoin.addBlock(new Block(1, "22/04/2023", { amount: 4 }));
+myCoin.addBlock(new Block(2, "22/04/2023", { amount: 8 }));
+/console.log('Is blockchain valid? ' + myCoin.isChainValid());
+console.log(JSON.stringify(myCoin, null, 4));
+Output
+Flow of execution
+Step 1->	Make sure you have installed nodejs in your system
+
+Step 2->	We need crypto –js node module to make our own blockchain. So install it as following
+
+Step 3->	Run the above code in command line using command: node main.js
+
+
+
+
+
+
+
