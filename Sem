@@ -1,1239 +1,578 @@
-PRACTICAL -1 WRITE THE FOLLOWING PROGRAMS FOR BLOCKCHAIN IN PYTHON
-A) A simple client class that generates the private and public keys by using the built-in Python RSA algorithm and test it.
-import binascii
-import Crypto from Crypto.PublicKey import RSA from Crypto.Signature import PKCS1_v1_5
-class Client:
-  def init(self)
-    random = Crypto.Random.new().read
-    self._private_key = RSA.generate(1024, random)
-    self._public_key = self._private_key.publickey()
-    self._signer = PKCS1_v1_5.new(self._private_key)
-  @property
-  def identity(self)
-    return
-binascii.hexlify(self._public_key.exportKey(format="DER")).decode(
-      "ascii"     )
-Dinesh = Client()
-print("\n Public Key:",Dinesh.identity)
-
-
-
-B) A transaction class to send and receive money and test it.
-import binascii import collections import datetime from client import Client from Crypto.Hash import SHA from Crypto.Signature import PKCS1_v1_5
-class Transaction:
-  def init(self, sender, recipient, value)
-    self.sender = sender
-    self.recipient = recipient
-    self.value = value
-    self.time = datetime.datetime.now()
-  def to_dict(self)
-    identity = "Genesis" if self.sender	"Genesis" else self.sender.identity
-    return collections.OrderedDict(
-      {
-        "sender": identity,
-        "recipient": self.recipient,
-        "value": self.value,
-        "time": self.time,
-      }
-    )
-  def sign_transaction(self)
-    private_key = self.sender._private_key
-    signer = PKCS1_v1_5.new(private_key)
-    h = SHA.new(str(self.to_dict()).encode("utf8"))
-    return binascii.hexlify(signer.sign(h)).decode("ascii")
-Dinesh = Client() Ramesh = Client()
-t = Transaction(Dinesh, Ramesh.identity, 5.0) print("\nTransaction Recipient:\n", t.recipient) # print("\nTransaction Sender:\n", t.sender) print("\nTransaction Value:\n", t.value)
-signature = t.sign_transaction() print("\nSignature:\n", signature)
-
-
-C) Create multiple transactions and display them.
-from client import Client from transaction_class import Transaction
-Dinesh = Client() Ramesh = Client()
-t = Transaction(Dinesh, Ramesh.identity, 5.0) print("\nTransaction Recipient:\n", t.recipient) # print("\nTransaction Sender:\n", t.sender) print("\nTransaction Value:\n", t.value)
-signature = t.sign_transaction() print("\nSignature:\n", signature)
-Dinesh = Client()
-Ramesh = Client()
-Seema = Client() Vijay = Client()
-t1 = Transaction(Dinesh, Ramesh.identity, 15.0)
-t1.sign_transaction() transactions = [t1]
-t2 = Transaction(Dinesh, Seema.identity, 6.0)
-t2.sign_transaction() transactions.append(t2)
-t3 = Transaction(Ramesh, Vijay.identity, 2.0)
-t3.sign_transaction() transactions.append(t3)
-t4 = Transaction(Seema, Ramesh.identity, 4.0)
-t4.sign_transaction() transactions.append(t4)
-for transaction in transactions:
-  Transaction.display_transaction(transaction)
-  print("	")
-
-
-
-
-D) Create a blockchain, a genesis block and execute it.
-from client import Client from transaction_class import Transaction
-class Block:
-  def init(self, client)
-    self.verif ed_transactions = []
-    self.previous_block_hash = ""
-    self.Nonce = ""     self.client = client
-def dump_blockchain(blocks)
-  print(f"\nNumber of blocks in the chain: {len(blocks)}")
-  for i, block in enumerate(blocks)
-    print(f"block # {i}")
-    for transaction in block.verif ed_transactions:
-      Transaction.display_transaction(transaction)
-      print("	")
-  print("	")
-Dinesh = Client() t0 = Transaction("Genesis", Dinesh.identity(), 500.0)
-block0 = Block(Dinesh) block0.previous_block_hash = "" NONCE = None
-block0.verif ed_transactions.append(t0)
-digest = hash(block0) last_block_hash = digest
-TPCoins = [block0] dump_blockchain(TPCoins)
-
-
-E) Create a mining function and test it.
-import hashlib
-def sha256(message)
-  return hashlib.sha256(message.encode("ascii")).hexdigest()
-def mine(message, diff culty=1)
-  assert diff culty	1
-  pref x = "1" * diff culty
-  for i in range(1000)
-    digest = sha256(str(hash(message)) + str(i))
-    if digest.startswith(pref x)
-      print(f"after {str(i)} iterations found nonce: {digest}")
-      # return print(digest) mine("test message",2)
+Practical No. 1: 
+A) Install NLTK 
+Python 3.9.2 Installation on Windows  
+Step 1) Go to link https://www.python.org/downloads/, and select the latest version for windows. 
+ 
+ 
+ 	 
+Note: If you don't want to download the latest version, you can visit the download tab and see all releases. 
+ 
+ 
+Step 2) Click on the Windows installer (64 bit) 
+Step 3) Select Customize Installation 
+ 
+ 
+ 
+Step 4) Click NEXT 
+ 
+ 
+ 
+Step 5) In next screen 
+Select the advanced options 
+Give a Custom install location. Keep the default folder as c:\Program files\Python39 
+Click Install 
+ 
+ 
+ 
+Step 6) Click Close button once install is done. 
+Step 7) open command prompt window and run the following commands: 
+C:\Users\Beena Kapadia>pip install --upgrade pip 
+C:\Users\Beena Kapadia> pip install --user -U nltk 
+C:\Users\Beena Kapadia> >pip install --user -U numpy 
+C:\Users\Beena Kapadia>python 
 
 
+>>> import nltk 
+>>> 
+ 
+ 
+(Browse https://www.nltk.org/install.html for more details) 
 
-F) Add blocks to the miner and dump the blockchain.
-import datetime import hashlib
-# Create a class with two functions
-class Block:
-  def init(self, data, previous_hash)
-    self.timestamp = datetime.datetime.now(datetime.timezone.utc)
-    self.data = data
-    self.previous_hash = previous_hash
-    self.hash = self.calc_hash()
-  def calc_hash(self)
-    sha = hashlib.sha256()
-    hash_str = self.data.encode("utf-8")
-    sha.update(hash_str)
-    return sha.hexdigest()
-# Instantiate the class blockchain = [Block("First block", "0")]
-blockchain.append(Block("Second block", blockchain[0].hash)) blockchain.append(Block("Third block", blockchain[1].hash))
-# Dumping the blockchain
-for block in blockchain:
-  print(
-    f"Timestamp: {block.timestamp}\nData: {block.data}\nPrevious Hash:
-{block.previous_hash}\nHash: {block.hash}\n"
-  )
 
 
-PRACTICAL-2 INSTALL AND CONFIGURE GO ETHEREUM AND THE
-MIST BROWSER. DEVELOP AND TEST A SAMPLE
-APPLICATION(METAMASK & REMIX)
-Step 1->Install MetaMask extension for chrome from Chrome Web Store
 
 
 
 
-Step 2-> Click on Metamask Extension in Extensions. Below page will open in a new tab. Click on Create a New Wallet. Click on I agree.
 
 
-3-> Create a password. This password can be used only on the device it was created on. Create a Strong password and click on Create a new Wallet button
 
 
-Step4->	Click on Secure my wallet button, following window will appear
 
-Step 5-> Click on Reveal Secret Recovery Phrase button and save the words in the same sequence
 
-	6->	Enter the respective words in the empty positions and click Confirm.
 
 
-Step 7->	Click Got it!
 
-	Step 8->	Click on Next
 
-Step 9->	Following will be the Dashboard
 
-Step 10-> Click on Ethereum Mainnet button. Next click on Show/hide test networks.
 
 
-Step 11-> Check if tesnets are shown by clicking on Etherum Mainnet button. Click on Sepolia test network.
 
-Step 12-> Go to https://sepoliafaucet.com/ and Click on Alchemy Login button.
 
-Step 13-> Login to a gmail account in another browser tab and click on Sign in with Google
 
-Step 14-> Now go to MetaMask and copy the account address.
 
 
-Step 15-> Paste the address and click on Send Me ETH.
-Step 16-> Your ETH transfer is succesfull. You should see a similar animation.
 
-Step 17-> Check your MetaMask account for Sepolia test network. 0.5 ETH will be added.
+1B) Convert the given text to speech. 
+Source code: 
+# text to speech 
+# pip install gtts 
+# pip install playsound 
+from playsound import playsound 
+# import required for text to speech conversion 
+from gtts import gTTS 
+mytext = "Welcome to Natural Language programming" language = "en" 
+myobj = gTTS(text=mytext, lang=language, slow=False) myobj.save("myfile.mp3") 
+playsound("myfile.mp3") 
+ 
+Output: 
+welcomeNLP.mp3 audio file is getting created and it plays the file with playsound() method, while running the program. 
+ 
 
 
 
 
-PRACTICAL-3 IMPLEMENT AND DEMONSTRATE THE USE OF THE FOLLOWING IN SOLIDITY
-TO EXECUTE SOLIDITY SCRIPTS GO TO  
-=>HTTPS://REMIX.ETHEREUM.ORG/
-OPEN CONTRACTS FOLDER AND STARTING WRITING SCRIPTS. THE SCRIPTS ARE COMPILED USING SOLIDITY COMPILER.
-THE FOLLOWING SCRIPTS WERE COMPILED USING 0.5.0+COMMIT.1D4F565A SOLIDITY COMPILER
-DEPLOY THE SCRIPTS TO EXECUTE CODE
-A)Variable, Operators, Loops, Decision Making, Strings, Arrays, Enums, Structs,
-Mappings, Conversions, Ether Units, Special Variables
-Variable
-pragma solidity ^0.5.0;
 
 
 
-contract variable_demo {
 
-  uint256 sum = 4; //state variable
 
-  uint256 x;
 
-  address a;
 
-  string s = "welcome";
 
 
 
-  function add(uint256) public {
 
-    uint256 y = 2; //local variable sum = sum+x+y:
 
-    sum = sum + x + y;
 
-  }
 
 
 
-  function display() public view returns (uint256) {
 
-    return sum;
 
-  }
 
 
 
-  function displayMsg() public view returns (string memory) {
 
-    return s;
 
-  }
+1C) Convert audio file Speech to Text. 
+Source code: 
+ 
+Note: required to store the input file "male.wav" in the current folder before running the program. 
+ 
+#pip3 install SpeechRecognition pydub 
+ 
+import speech_recognition as sr 
+filename = "male.wav" 
+ 
+# initialize the recognizer 
+r = sr.Recognizer() 
+ 
+# open the file with sr.AudioFile(filename) as source:     # listen for the data (load audio to memory)     audio_data = r.record(source) 
+    # recognize (convert from speech to text)     text = r.recognize_google(audio_data)     print(text) 
+ 
+Input: 
+male.wav (any wav file) 
+ 
+Output: 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Practical No. 2:
+2A) Study of various Corpus – Brown, Inaugural, Reuters, udhr with various methods like fields, raw, words, sents, categories,  
+source code: 
+'''NLTK includes a small selection of texts from the Project brown electronic text archive, which contains some 25,000 free electronic books, hosted at http://www.brown.org/. We begin by getting the Python interpreter to load the NLTK package, then ask to see nltk.corpus.brown.fileids(), the file identifiers in this corpus:''' 
+ 
+import nltk 
+from nltk.corpus import brown 
+print ('File ids of brown corpus\n',brown.fileids()) 
+ 
+'''Let’s pick out the first of these texts — Emma by Jane Austen — and give it a short name, emma, then find out how many words it contains:''' ca01 = brown.words('ca01') 
+ 
+# display first few words 
+print('\nca01 has following words:\n',ca01) 
+ 
+# total number of words in ca01 
+print('\nca01 has',len(ca01),'words') 
+#categories or files  print ('\n\nCategories or file in brown corpus:\n') print (brown.categories()) 
+ 
+'''display other information about each text, by looping over all the values of fileid corresponding to the brown file identifiers listed earlier and then computing statistics for each text.''' 
+print ('\n\nStatistics for each text:\n') print 
+('AvgWordLen\tAvgSentenceLen\tno.ofTimesEachWordAppearsOnAvg\t\tFileName') for fileid in brown.fileids(): 
+    num_chars = len(brown.raw(fileid))     num_words = len(brown.words(fileid))     num_sents = len(brown.sents(fileid)) 
+    num_vocab = len(set([w.lower() for w in brown.words(fileid)])) 
+    print (int(num_chars/num_words),'\t\t\t', int(num_words/num_sents),'\t\t\t', 
+int(num_words/num_vocab),'\t\t\t', fileid) 
+ 
+output: 
+ 
+
+
+2B)  Create and use your own corpora (plaintext, categorical) source code: 
+'''NLTK includes a small selection of texts from the Project filelist electronic text archive, which contains some 25,000 free electronic books, hosted at http://www.filelist.org/. We begin by getting the Python interpreter to load the NLTK package, then ask to see nltk.corpus.filelist.fileids(), the file identifiers in this corpus:''' 
+ 
+import nltk from nltk.corpus import PlaintextCorpusReader 
+ 
+corpus_root = 'D:/2020/NLP/Practical/uni' filelist = PlaintextCorpusReader(corpus_root, '.*') print ('\n File list: \n') 
+print (filelist.fileids()) 
+print (filelist.root)  
+'''display other information about each text, by looping over all the values of fileid corresponding to the filelist file identifiers listed earlier and then computing statistics for each text.''' 
+print ('\n\nStatistics for each text:\n') print 
+('AvgWordLen\tAvgSentenceLen\tno.ofTimesEachWordAppearsOnAvg\tFileName') 
+for fileid in filelist.fileids(): 
+    num_chars = len(filelist.raw(fileid))     num_words = len(filelist.words(fileid))     num_sents = len(filelist.sents(fileid)) 
+    num_vocab = len(set([w.lower() for w in filelist.words(fileid)]))     print (int(num_chars/num_words),'\t\t\t', int(num_words/num_sents),'\t\t\t', 
+int(num_words/num_vocab),'\t\t', fileid) 
+ 
+output: 
+ 
+ 
 
-}
-Output:-
 
 
-FIGURE 1 -DISPLAYING VARIABLE VALUE
+2C) Study Conditional frequency distributions  
+source code: 
+#process a sequence of pairs 
+text = ['The', 'Fulton', 'County', 'Grand', 'Jury', 'said', ...] pairs = [('news', 'The'), ('news', 'Fulton'), ('news', 'County'), ...] import nltk 
+from nltk.corpus import brown fd = nltk.ConditionalFreqDist( 
+          (genre, word) 
+          for genre in brown.categories() 
+          for word in brown.words(categories=genre)) 
+ 
+genre_word = [(genre, word) 
+              for genre in ['news', 'romance'] 
+              for word in brown.words(categories=genre)] 
+ 
+print(len(genre_word)) 
+ 
+print(genre_word[:4]) 
+ 
+print(genre_word[-4:]) 
+ 
+cfd = nltk.ConditionalFreqDist(genre_word) 
+ 
+print(cfd) 
+ 
+print(cfd.conditions()) 
+ 
+print(cfd['news']) print(cfd['romance']) 
+print(list(cfd['romance'])) 
+from nltk.corpus import inaugural 
+cfd = nltk.ConditionalFreqDist( 
+          (target, fileid[:4])           for fileid in inaugural.fileids()           for w in inaugural.words(fileid)           for target in ['america', 'citizen'] 
+          if w.lower().startswith(target)) 
+ 
+from nltk.corpus import udhr languages = ['Chickasaw', 'English', 'German_Deutsch',     'Greenlandic_Inuktikut', 'Hungarian_Magyar', 'Ibibio_Efik'] cfd = nltk.ConditionalFreqDist(           (lang, len(word))           for lang in languages 
+          for word in udhr.words(lang + '-Latin1')) 
+ 
+cfd.tabulate(conditions=['English', 'German_Deutsch'],              samples=range(10), cumulative=True) output: 
+ 
 
 
-2. Strings
-pragma solidity ^0.5.0;
-contract LearningStrings {
-string text;
-function getText() public view returns (string memory) {
-return text;
-}
-function setText() public {
-text = "hello";
-}
-function setTextByPassing(string memory message) public {
-text = message;
-}
-Output:-
-}
 
-FIGURE 2 - BEFORE SETTING NEW STRING VALUE
 
 
 
-FIGURE 3 - AFTER SETTING STRING VALUE
 
 
-3. Operators
-pragma solidity ^0.5.0;
-contract SolidityTest {
-uint16 public a = 20;
-uint16 public b = 10;
-uint256 public sum = a + b;
-uint256 public diff = a - b;
-uint256 public mul = a * b;
-uint256 public div = a / b;
-uint256 public mod = a % b;
-uint256 public dec = --b;
-uint256 public inc = ++a;
-}
-Output:-
 
 
-FIGURE 4 - ALL OPERATORS OF SOLIDITY DISPLAYED
-4. Array
-pragma solidity ^0.5.0;
-contract arraydemo
-{
-//Static Array
-uint[6] arr2=[10,20,30];
-function dispstaticarray() public view returns(uint[6] memory)
-{
-return arr2;
-}
-//Dynamic Array
-uint x=5;
-uint [] arr1;
-function arrayDemo() public
-{
-while(x>0)
-{
-arr1.push(x);
-x=x-1;
-}
-}
-function dispdynamicarray() public view returns(uint[] memory)
-{
-return arr1;
-}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+2D) Study of tagged corpora with methods like tagged_sents, tagged_words.  
+Source code: import nltk from nltk import tokenize nltk.download('punkt') 
+nltk.download('words') 
+ 
+para = "Hello! My name is Beena Kapadia. Today you'll be learning NLTK." sents = tokenize.sent_tokenize(para) 
+print("\nsentence tokenization\n===================\n",sents) 
+ 
+# word tokenization print("\nword tokenization\n===================\n") for index in range(len(sents)):   words = tokenize.word_tokenize(sents[index])   print(words) 
+ 
+output: 
+ 
+ 
+
+
+
+
+
+
+
+
+
+
+2E) Write a program to find the most frequent noun tags.  
+Code: 
+import nltk 
+from collections import defaultdict 
+text = nltk.word_tokenize("Nick likes to play football. Nick does not like to play cricket.") 
+tagged = nltk.pos_tag(text) print(tagged) 
+ 
+# checking if it is a noun or not addNounWords = [] count=0 for words in tagged: 
+    val = tagged[count][1]     if(val == 'NN' or val == 'NNS' or val == 'NNPS' or val == 'NNP'):         addNounWords.append(tagged[count][0])     count+=1 
+print (addNounWords) 
+temp = defaultdict(int) 
+# memoizing count for sub in addNounWords:     for wrd in sub.split():         temp[wrd] += 1 
+# getting max frequency 
+res = max(temp, key=temp.get) 
+# printing result 
+print("Word with maximum frequency : " + str(res)) 
+ 
+output: 
+ 
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+2F). Map Words to Properties Using Python Dictionaries  code: 
+#creating and printing a dictionay by mapping word with its properties thisdict = {   "brand": "Ford", 
+  "model": "Mustang", 
+  "year": 1964 
 } 
-Output:-
-
-FIGURE 5 - ARRAY DISPLAYED
-
-
-5. Decision Making
-If Else
-pragma solidity ^0.5.0;
-contract ifelsedemo
-{
-uint i=10;
-function decision_making() public view returns(string memory)
-{
-if(i%2==0)
-{
-return "even";
-}
-else
-{
-return "Odd";
-}
-}
-Output:-
-
-FIGURE 6 - IF ELSE OUTPUT
-
-
-6. Loops
-For Loop
-pragma solidity ^0.5.0;
-contract loopDemo
-{
-uint [] data;
-function forDemo() public returns(uint[] memory)
-{
-for(uint i=0; i<10; i++){
-data.push(i);
-}
-return data;
-}
-function disp() public view returns(uint[] memory)
-{
-return data;
-}
-}
-
-Output:-
-
-FIGURE 7 - APPENDING VALUES TO ARRAY USING FOR LOOP
-
-
-While Loop
-pragma solidity ^0.5.0;
-contract whiledemo
-{
-uint [] data;
-uint x=0;
-function whileLoopDemo() public
-{
-while(x<5)
-{
-data.push(x);
-x=x+1;
-}
-}
-function dispwhileloop() public view returns(uint[] memory)
-{
-return data;
-}
-}
-Output:-
-
-FIGURE 8 - APPENDING VALUES TO ARRAY USING WHILE LOOP
-
-
-Do While
-pragma solidity ^0.5.0;
-// Creating a contract
-contract DoWhile {
-// Declaring a dynamic array
-uint256[] data;
-// Declaring state variable
-uint8 j = 0;
-// Defining function to demonstrate
-// 'Do-While loop'
-function loop() public returns (uint256[] memory) {
-do {
-j++;
-data.push(j);
-} while (j < 5);
-return data;
-}
-function display() public view returns(uint256[] memory){
-return data;
-}
-}
-Output:-
-
-
-FIGURE 9 APPENDING VALUES TO ARRAY USING DO WHILE LOOP
-
+print(thisdict) print(thisdict["brand"]) print(len(thisdict)) 
+print(type(thisdict)) 
+ 
+output: 
+ 
+ 
 
-7. Enums
-pragma solidity ^0.5.0;
-contract enumdemo {
-enum week_days {
-Monday,
-Tuesday,
-Wednesday,
-Thursday,
-Friday,
-Saturday,
-Sunday
-}
-week_days week;
-week_days choice;
-week_days constant default_value = week_days.Sunday;
-function set_value() public {
-choice = week_days.Tuesday;
-}
-function get_choice() public view returns (week_days) {
-return choice;
-}
-function get_defaultvalue() public view returns (week_days) {
-return default_value;
-}
-Output:-
-
-}
-
-FIGURE 10 - ACCESSING ENUM VALUES
-
-
-8. Structs
-pragma solidity ^0.5.0;
-contract structdemo {
-struct Book {
-string name;
-string author;
-uint256 id;
-bool availability;
-}
-Book book2;
-Book book1 = Book("A Little Life", "Hanya Yanagihara", 2, false);
-function set_details() public {
-book2 = Book("Almond", "Sohn won-pyung", 1, true);
-}
-function book_info()
-public
-view
-returns (
-string memory,
-string memory,
-uint256,
-bool
-)
-{
-return (book1.name, book1.author, book1.id, book1.availability);
-}
-function get_details()
-public
-view
-returns (
-string memory, string memory, uint256, bool
-)
-{
-return (book2.name, book2.author, book2.id, book2.availability);
-}
-}
-Output:-
-
-
-FIGURE 11- STRUCTURE DATATYPE IN SOLIDITY
-9. Mappings
-pragma solidity ^0.5.0;
-contract LedgerBalance {
-mapping(address => uint256) public balances;
-function updateBalance(uint256 newBalance) public {
-balances[msg.sender] = newBalance;
-}
-}
-contract Updater {
-function updateBalance() public returns (uint256) {
-LedgerBalance ledgerBalance = new LedgerBalance();
-return ledgerBalance.balances(address(this));
-}
-}
-Output:-
-
-FIGURE 12 - BEFORE UPDATING BALANCE
-
-
-FIGURE 13 - AFTER UPDATING BALANCE
-
-
-
-10.Conversions
-// SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
-contract ImplicitConversion {
-function add() public pure returns (uint256) {
-uint256 a = 10;
-uint256 b = 20;
-return a + b;
-}
-}
-contract ExplicitConversion {
-function convert() public pure returns (bytes memory) {
-string memory str = "Hello World";
-bytes memory b = bytes(str);
-return b;
-}
-}
-Step 1->	Deploy both contracts
-
-Step 2-> Open Implicit Conversion and click on add button to sum and display value
-
-Step 3->	Open Explicit Conversion and click on convert button
-
-
-
-11.Ether Units
-// SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
-contract SolidityTest {
-function convert_Amount_to_Wei(uint256 Amount)
-public
-pure
-returns (uint256)
-{
-return Amount * 1 wei;
-}
-function convert_Amount_To_Ether(uint256 Amount)
-public
-pure
-returns (uint256)
-{
-return Amount * 1 ether;
-}
-function convert_Amount_To_Gwei(uint256 Amount)
-public
-pure
-returns (uint256)
-{
-return Amount * 1 gwei;
-}
-function convert_seconds_To_mins(uint256 _seconds)
-public
-pure
-returns (uint256)
-{
-return _seconds / 60;
-}
-function convert_seconds_To_Hours(uint256 _seconds)
-public
-pure
-returns (uint256)
-{
-return _seconds / 3600;
-}
-function convert_Mins_To_Seconds(uint256 _mins)
-public
-pure
-returns (uint256)
-{
-return _mins * 60;
-}
-}
-
-
-Step 1->	Provide values to each function and click on them
-
-
-
-12.Special Variables
-// SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
-contract Special_Variables {
-mapping(address => uint256) rollNo;
-function setRollNO(uint256 _myNumber) public {
-rollNo[msg.sender] = _myNumber;
-}
-function whatIsMyRollNumber() public view returns (uint256) {
-return rollNo[msg.sender];
-}
-}
-Step 1-> Deploy contract Special Variables
-
-
-Step 2->	Input	a	number	for	setRollNO	function	and	click	on	it	& whatIsMyRollNumber button
-
-
-B)Functions, Function Modifiers, View functions, Pure Functions, Fallback Function,
-Function Overloading, Mathematical functions, Cryptographic functions
-1. View Functions
-pragma solidity ^0.5.0;
-contract view_demo {
-uint256 num1 = 2;
-uint256 num2 = 4;
-function getResult() public view returns (uint256 product, uint256 sum) {
-product = num1 * num2;
-sum = num1 + num2;
-}
-}
-
-
-FIGURE 14 - VIEW FUNCTION DEMO
-
-
-2. Pure Functions
-pragma solidity ^0.5.0;
-contract pure_demo {
-function getResult() public pure returns (uint256 product, uint256 sum) {
-uint256 num1 = 2;
-uint256 num2 = 4;
-product = num1 * num2;
-sum = num1 + num2;
-}
-}
-
-
-FIGURE 15 - PURE FUNCTION OUTPUT
-
-
-3. Mathematical Functions
-pragma solidity ^0.5.0;
-contract Test{
-function CallAddMod() public pure returns(uint){
-return addmod(7,3,3);
-}
-function CallMulMod() public pure returns(uint){
-return mulmod(7,3,3);
-}
-}
-
-
-FIGURE 16 - MATHEMATICAL FUNCTIONS IN SOLIDITY
-
-
-4. Cryptographic Functions
-pragma solidity ^0.5.0;
-contract Test{
-function callKeccak256() public pure returns(bytes32 result){
-return keccak256("BLOCKCHAIN");
-}
-function callsha256() public pure returns(bytes32 result){
-return sha256("BLOCKCHAIN");
-}
-function callripemd() public pure returns (bytes20 result){
-return ripemd160("BLOCKCHAIN");
-}
-}
-
-FIGURE 17 - CRYPTOGRAPHY ALGORITHMS IN SOLIDITY
-
-
-5. Functions
-// SPDX-License-Identifier: MIT
-pragma solidity >=0.4.22 <0.9.0;
-contract Test {
-function return_example()
-public
-pure
-returns (
-uint256,
-uint256,
-uint256,
-string memory
-)
-{
-uint256 num1 = 10;
-uint256 num2 = 16;
-uint256 sum = num1 + num2;
-uint256 prod = num1 * num2;
-uint256 diff = num2 - num1;
-string memory message = "Multiple return values";
-return (sum, prod, diff, message);
-}
-}
-Step 1-> Deploy Test Contract
-
-Step 2->	Click on return_example button to display all values
-
-
-
-6. Fallback Function
-// SPDX-License-Identifier: MIT
-pragma solidity ^0.5.12;
-contract A {
-uint256 n;
-function set(uint256 value) external {
-n = value;
-}
-function() external payable {
-n = 0;
-}
-}
-contract example {
-function callA(A a) public returns (bool) {
-(bool success, ) = address(a).call(abi.encodeWithSignature("setter()"));
-require(success);
-address payable payableA = address(uint160(address(a)));
-return (payableA.send(2 ether));
-}
-}
-Step 1-> Deploy both A & example contracts
-
-Step 2->Provide values to both deployed contracts accordingly(use any address)
-
-
-
-7. Function Overloading
-// SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
-contract OverloadingExample {
-function add(uint256 a, uint256 b) public pure returns (uint256) {
-return a + b;
-}
-function add(string memory a, string memory b)
-public
-pure
-returns (string memory)
-{
-return string(abi.encodePacked(a, b));
-}
-}
-Step 1-> Deploy Overloading Example contract
-
-Step 2->Give integer and string values to both add functions as below
-
-
-
-8. Function modifiers
-// SPDX-License-Identifier: MIT
-pragma solidity ^0.5.0;
-contract ExampleContract {
-address public owner = 0x5B38Da6a701c568545dCfcB03FcB875f56beddC4;
-uint256 public counter;
-modifier onlyowner() {
-require(msg.sender == owner, "Only the contract owner can call");
-_;
-}
-function incrementcounter() public onlyowner {
-counter++;
-}
-}
-
-Step 1->	Click on owner button
-
-Step 2->	Click on counter button initially it is 0.
-
-Step 3-> Then click on increment counter button and again click on counter button, the counter has been increased
-
-
-
-PRACTICAL-4 IMPLEMENT AND DEMONSTRATE THE USE OF THE
-FOLLOWING IN SOLIDITY
-A) Withdrawal Pattern, Restricted Access
-1) Withdrawal Pattern
-// SPDX-License-Identifier: MIT
-pragma solidity 0.8.18;
-contract WithdrawalPattern {
-address public owner;
-uint256 public lockedbalance;
-uint256 public withdrawablebalance;
-constructor() {
-owner = msg.sender;
-}
-modifier onlyowner() {
-require(msg.sender == owner, "Only the owner can call this function");
-_;
-}
-function deposit(uint256 amount) public payable {
-require(amount > 0, "Amount must be greater than zero");
-lockedbalance += amount;
-}
-function withdraw(uint256 amount) public payable onlyowner {
-require(
-amount <= withdrawablebalance,
-"Insufficient withdrawable balance"
-);
-withdrawablebalance -= amount;
-payable(msg.sender).transfer(amount);
-}
-function unlock(uint256 amount) public onlyowner {
-require(amount <= lockedbalance, "Insufficient locked balance");
-lockedbalance -= amount;
-withdrawablebalance += amount;
-}
-}
-
-
-
-Flow of execution
-Step 1->	Click on owner
-
-Step 2->	Enter an amount and click on deposit
-
-Step 3-> Click on locked balance button to display the locked amount in the account
-
-Step 4->
-Click on withdrawable balance button
-
-
-Step 5->	Click on unlock button and enter any amount to transfer amount to withdrawable balance. Check locked balance and withdrawable balance.
-
-
-
-Step 6->	Enter any amount you want to withdraw and Click the withdraw button. You should get an error and the transaction should be reverted.
-
-
-
-
-2) Restricted Access
-//SPDX-License-Identifier: MIT
-pragma solidity ^0.8.18;
-contract RestrictedAccess {
-address public owner = msg.sender;
-uint256 public creationTime = block.timestamp;
-modifier onlyBy(address _account) {
-require(msg.sender == _account, "Sender not authorized!");
-_;
-}
-modifier onlyAfter(uint256 _time) {
-require(block.timestamp >= _time, "Function was called too early!");
-_;
-}
-modifier costs(uint256 _amount) {
-require(msg.value >= _amount, "Not enough Ether provided!");
-_;
-}
-function forceOwnerChange(address _newOwner)
-public
-payable
-costs(200 ether)
-{
-owner = _newOwner;
-}
-function changeOwner(address _owner) public onlyBy(owner) {
-owner = _owner;
-}
-function disown() public onlyBy(owner) onlyAfter(creationTime + 3 weeks) {
-delete owner;
-}
-
-
-Flow of execution
-Step 1->	Click on owner to create an owner object
-
-Step 2->	Click on lastOwnerChange button
-
-Step 3->	Change the address of the account from Account dropdown in Deploy tab of Remix IDE.
-
-
-Step 4->	Copy the address
-
-Step 5->	Paste the address in changeOwner input and click on changeOwner.
-
-Step 6->	You should get an error as following
-
-Step 7->	If you click on buycontract it should give an error as follows
-
-Step 8->	Now, paste the actual address of the account in the changeowner input and click on changeowner
-
-
-
-B) Contracts, Inheritance, Constructors, Abstract Contracts, Interfaces
-1) Contracts
-pragma solidity ^0.5.0;
-contract Contract_demo {
-string message = "Hello";
-function dispMsg() public view returns (string memory) {
-return message;
-}
-}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+2G) Study i) DefaultTagger, ii) Regular expression tagger, iii) UnigramTagger  
+i) DefaultTagger code: 
+import nltk from nltk.tag import DefaultTagger exptagger = DefaultTagger('NN') from nltk.corpus import treebank testsentences = treebank.tagged_sents() [1000:] print(exptagger.evaluate (testsentences)) 
+ 
+#Tagging a list of sentences import nltk from nltk.tag import DefaultTagger 
+exptagger = DefaultTagger('NN') 
+print(exptagger.tag_sents([['Hi', ','], ['How', 'are', 'you', '?']])) 
+ 
+output 
+ 
+ 
+
+
+ii) Regular expression tagger,  code: from nltk.corpus import brown from nltk.tag import RegexpTagger test_sent = brown.sents(categories='news')[0] 
+regexp_tagger = RegexpTagger( 
+    [(r'^-?[0-9]+(.[0-9]+)?$', 'CD'),   # cardinal numbers 
+     (r'(The|the|A|a|An|an)$', 'AT'),   # articles 
+     (r'.*able$', 'JJ'),                # adjectives 
+     (r'.*ness$', 'NN'),                # nouns formed from adjectives 
+     (r'.*ly$', 'RB'),                  # adverbs 
+     (r'.*s$', 'NNS'),                  # plural nouns 
+     (r'.*ing$', 'VBG'),                # gerunds 
+     (r'.*ed$', 'VBD'),                 # past tense verbs 
+     (r'.*', 'NN')                      # nouns (default) 
+]) 
+print(regexp_tagger) print(regexp_tagger.tag(test_sent)) output: 
+ 
+
+
+iii) UnigramTagger code: 
+# Loading Libraries from nltk.tag import UnigramTagger 
+from nltk.corpus import treebank 
+ 
+# Training using first 10 tagged sentences of the treebank corpus as data. 
+# Using data 
+train_sents = treebank.tagged_sents()[:10] 
+   
+# Initializing 
+tagger = UnigramTagger(train_sents) 
+   
+# Lets see the first sentence  # (of the treebank corpus) as list    print(treebank.sents()[0]) 
+print('\n',tagger.tag(treebank.sents()[0])) 
+ 
+#Finding the tagged results after training. 
+tagger.tag(treebank.sents()[0]) 
+ 
+#Overriding the context model 
+tagger = UnigramTagger(model ={'Pierre': 'NN'}) 
+print('\n',tagger.tag(treebank.sents()[0])) output: 
+ 
+ 
+
+
+
+
+
+
+
+
+
+2H) Find different words from a given plain text without any space by comparing this text with a given corpus of words. Also find the score of words. 
+Question:  
+Initialize the hash tag test data or URL test data and convert to plain text without any space.. Read a text file of different words and compare the plain text data with the words exist in that text file and find out different words available in that plain text. Also find out how many words could be found. (for example, text = "#whatismyname" or text = www.whatismyname.com. Convert that to plain text without space as:  
+whatismyname and read text file as words.txt. Now compare plain text with words given in a file and find the words form the plain text and the count of words which could be found) Source code: from __future__ import with_statement #with statement for reading file import re   # Regular expression 
+ 
+words = []  #  corpus file words testword = []   # test words    ans = []    # words matches with corpus 
+ 
+print("MENU") 
+print("-----------") print(" 1 . Hash tag segmentation ") print(" 2 . URL segmentation ") 
+print("enter the input choice for performing word segmentation") choice = int(input()) 
+ 
+if choice == 1:     text = "#whatismyname"         # hash tag test data to segment     print("input with HashTag",text)     pattern=re.compile("[^\w']")     a = pattern.sub('', text) elif choice == 2: 
+    text = "www.whatismyname.com"       # url test data to segment     print("input with URL",text)     a=re.split('\s|(?<!\d)[,.](?!\d)', text) 
+    splitwords = ["www","com","in"]      # remove the words which is containg in the list     a ="".join([each for each in a if each not in splitwords]) else:     print("wrong choice...try again") print(a) 
+ 
+for each in a:     testword.append(each)   #test word  
+test_lenth = len(testword)       # lenth of the test data 
+ 
+# Reading the corpus with open('words.txt', 'r') as f:     lines = f.readlines() 
+    words =[(e.strip()) for e in lines] 
+ 
+def Seg(a,lenth): 
+    ans =[]     for k in range(0,lenth+1):  # this loop checks char by char in the corpus 
+         
+        if a[0:k] in words: 
+            print(a[0:k],"-appears in the corpus")             ans.append(a[0:k])    
+            break     if ans != []: 
+        g = max(ans,key=len) 
+        return g 
+ 
+test_tot_itr = 0    #each iteration value 
+answer = []     # Store the each word contains the corpus 
+Score = 0   # initial value for score 
+N = 37    # total no of corpus 
+M = 0 C = 0 while test_tot_itr < test_lenth:         ans_words = Seg(a,test_lenth)     if ans_words != 0: 
+        test_itr = len(ans_words)         answer.append(ans_words)         a = a[test_itr:test_lenth] 
+        test_tot_itr += test_itr 
+ 
+Aft_Seg = " ".join([each for each in answer]) # print segmented words in the list print("output") print("---------") 
+print(Aft_Seg)  # print After segmentation the input 
+ 
+# Calculating Score C = len(answer) 
+score = C * N / N       # Calculate the score 
+print("Score",score)         
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Input:  
+Words.txt 
+-------------- 
+
+
+check domain big rocks name cheap being human current rates 
+ought to 
+go 
+down apple domains honesty hour follow 
+back 
+social  media 30 seconds earth this is 
+insane it  
+time 
+what is 
+my  name 
+let  us  go 
 
  
-2) Inheritance
-pragma solidity >=0.4.22 <0.6.0;
-contract Parent {
-uint256 internal sum;
-function setValue() external {
-uint256 a = 10;
-uint256 b = 20;
-sum = a + b;
-}
-}
-contract child is Parent {
-function getValue() external view returns (uint256) {
-return sum;
-}
-}
-contract caller {
-child cc = new child();
-function testInheritance() public returns (uint256) {
-cc.setValue();
-return cc.getValue();
-}
-function show_value() public view returns (uint256) {
-return cc.getValue();
-}
-}
-
-
-Flow of execution
-Step 1->	Select caller contract to deploy in Contract and deploy
-
-Step 2->	Click test Inheritance and then click on show_value to view value
-
-3) Abstract Contracts
-// SPDX-License-Identifier: MIT
-pragma solidity ^0.5.17;
-contract Calculator {
-function getResult() external view returns (uint256);
-}
-contract Test is Calculator {
-constructor() public {}
-function getResult() external view returns (uint256) {
-uint256 a = 1;
-uint256 b = 2;
-uint256 result = a + b;
-return result;
-}
-}
-
-Outputs:-
-Flow of execution
-Step 1->	Select Test contract and deploy
-
-
-Step 2->	The contact will deploy as below
-
-
-
-Step 3->	Click on getResult to get sum of a+b
-
-
-
-
-4) Constructors
-// SPDX-License-Identifier: MIT
-pragma solidity ^0.5.0;
-// Creating a contract
-contract constructorExample {
-string str;
-constructor() public {
-str = "GeeksForGeeks";
-}
-function getValue() public view returns (string memory) {
-return str;
-}
-}
-
-
-Flow of execution
-Click on getValue to print string
-
-5) Interfaces
-pragma solidity ^0.5.0;
-interface Calculator {
-function getResult() external view returns(uint);
-}
-contract Test is Calculator {
-constructor() public {}
-function getResult() external view returns(uint){
-uint a = 1;
-uint b = 2;
-uint result = a + b;
-return result;
-}
-}
-Output:-
-Flow of execution
-
-Step 1->	Click on getResult to display sum
-
-
-
+ Output: 
+ 
+ 
+ 
 
-C) Libraries, Assembly, Events, Error handling.
-1) Libraries
-myLib.sol Code
-// SPDX-License-Identifier: MIT
-pragma solidity >=0.7.0 <0.9.0;
-library myMathLib {
-function sum(uint256 a, uint256 b) public pure returns (uint256) {
-return a + b;
-}
-function exponent(uint256 a, uint256 b) public pure returns (uint256) {
-return a**b;
-}
-}
-using_library.sol Code
-// SPDX-License-Identifier: MIT
-pragma solidity >=0.7.0 <0.9.0;
-import "contracts/myLIB.sol";
-contract UseLib {
-function getsum(uint256 x, uint256 y) public pure returns (uint256) {
-return myMathLib.sum(x, y);
-}
-function getexponent(uint256 x, uint256 y) public pure returns (uint256) {
-return myMathLib.exponent(x, y);
-}
-}
 
-Flow of execution
-Step 1->	Change contract to UseLib and deploy.
+Practical 3
+3A). Study of Wordnet Dictionary with methods as synsets, definitions, examples, antonyms 
+    Source code: 
+'''WordNet provides synsets which is the collection of synonym words also called 
+“lemmas”''' import nltk from nltk.corpus import wordnet 
+print(wordnet.synsets("computer")) 
+ 
+# definition and example of the word ‘computer’ print(wordnet.synset("computer.n.01").definition()) 
+ 
+#examples 
+print("Examples:", wordnet.synset("computer.n.01").examples()) 
+ 
+#get Antonyms 
+print(wordnet.lemma('buy.v.01.buy').antonyms()) 
+ 
+output: 
+  
 
-Step 2->	The deployed contract should be same as below
 
-Step 3->	Input values to both getexponent and getsum functions as below
 
-Step 4->	Execute both functions. You will get below output
 
 
 
-2) Assembly
-// SPDX-License-Identifier: GPL-3.0
-pragma solidity >=0.4.16 <0.9.0;
-contract InlineAssembly {
-// Defining function
-function add(uint256 a) public view returns (uint256 b) {
-assembly {
-let c := add(a, 16)
-mstore(0x80, c)
-{
-let d := add(sload(c), 12)
-b := d
-}
-b := add(b, c)
-}
-}
-}
 
 
-Flow of execution
-Step 1->	Input a number for add function
 
-Step 2->	Click add to output sum
 
 
 
 
-3) Events
-// SPDX-License-Identifier: MIT
-pragma solidity ^0.5.0;
-// Creating a contract
-contract eventExample {
-// Declaring state variables
-uint256 public value = 0;
-// Declaring an event
-event Increment(address owner);
-// Defining a function for logging event
-function getValue(uint256 _a, uint256 _b) public {
-emit Increment(msg.sender);
-value = _a + _b;
-}
-}
 
-// SPDX-License-Identifier: MIT
 
-pragma solidity ^0.5.17;
+3B). Study lemmas, hyponyms, hypernyms. 
+    Source code: 
+ 	import nltk from nltk.corpus import wordnet print(wordnet.synsets("computer")) print(wordnet.synset("computer.n.01").lemma_names()) #all lemmas for each synset. 
+for e in wordnet.synsets("computer"):     print(f'{e} --> {e.lemma_names()}') 
+ 
+#print all lemmas for a given synset 
+print(wordnet.synset('computer.n.01').lemmas()) 
+ 
+#get the synset corresponding to lemma 
+print(wordnet.lemma('computer.n.01.computing_device').synset()) 
+ 
+#Get the name of the lemma 
+print(wordnet.lemma('computer.n.01.computing_device').name()) 
+ 
+#Hyponyms give abstract concepts of the word that are much more specific #the list of hyponyms words of the computer 
+ 
+syn = wordnet.synset('computer.n.01') print(syn.hyponyms) 
+ 
+print([lemma.name() for synset in syn.hyponyms() for lemma in synset.lemmas()]) 
+ 
+#the semantic similarity in WordNet vehicle = wordnet.synset('vehicle.n.01') car = wordnet.synset('car.n.01') 
+ 
+print(car.lowest_common_hypernyms(vehicle)) 
+ 
+    Output: 
+ 
 
 
+3C) Write a program using python to find synonym and antonym of word "active" using Wordnet. 
+     Source code:      from nltk.corpus import wordnet print( wordnet.synsets("active")) 
+ 
+print(wordnet.lemma('active.a.01.active').antonyms()) 
+ 
+ 
+ 
+     Output: 
+      
+ 
+ 
 
-Flow of execution
-Step 1->	Provide values to getValue function and click on it.
 
-Step 2->	In the terminal check for logs
 
-4) Error Handling
 
-contract ErrorDemo {
 
-  function getSum(uint256 a, uint256 b) public pure returns (uint256) {
 
-    uint256 sum = a + b;
 
-    // require(sum < 255, "Invalid");
 
-    assert(sum<255);
 
-    return sum;
 
-  }
 
-}
 
 
 
 
-Flow of execution
-Step 1->	Provide some values and press on getSum
 
-Step 2->	Check terminal panel
-
-
-
-PRACTICAL-5 WRITE A PROGRAM TO DEMONSTRATE MINING OF ETHER
-const Web3 = require('web3');
-const web3 = new Web3(new
-Web3.providers.HttpProvider('http: /127.0.0.1:7545')); / Replace with your
-Ganache HTTP provider
-async function mine() {
-const accounts = await web3.eth.getAccounts();
-const coinbaseacc1 = accounts[0];
-const coinbaseacc2 = accounts[1];
-console.log(`Mining ether on Ganache with coinbase address:
-${coinbaseacc1}`);
-while (true) {
-try {
-await web3.eth.sendTransaction({
-from: coinbaseacc1,
-to: coinbaseacc2,
-value: 50,
-});
-console.log(`Mined a new block!`);
-} catch (err) {
-console.error(err);
-}
-}}mine();
-
-
-
-PRACTICAL-6 DEMONSTRATE THE RUNNING OF THE BLOCKCHAIN NODE
-Step 1-> Create a folder named ethermine and a JSON file named genesis.json and write the following lines in it.
-{
-"config": {
-"chainId": 3792,
-"homesteadBlock": 0,
-"eip150Block": 0,
-"eip155Block": 0,
-"eip158Block": 0
-},
-"difficulty": "2000",
-"gasLimit": "2100000",
-"alloc": {
-"0x0b6C4c81f58B8d692A7B46AD1e16a1147c25299F": {
-"balance": "9000000000000000000"
-}
-}
-}
-
-Step 2-> Run command geth account new –datadir
-C:\Users\Achsah\Documents\MScIT\sem4\blockchain_practical\ethermine
-testnet-blockchain
-
-
-Step 3-> Run command geth account new --datadir
-C:\Users\Achsah\Documents\MScIT\sem4\blockchain_practical\ethermine
-
-Step 4-> Run command geth --identity "localB" --http --http.port "8280"
---http.corsdomain "*" --http.api "db,eth,net,web3" --datadir
-"C:\Users\Achsah\Documents\MScIT\sem4\blockchain_practical\ethermine"
---port "30303" --nodiscover --networkid 5777 console. This command will
-enable geth console.
-
-Step 5-> Run the command
-miner.setEtherbase('0xC050FE4d9bAc591d29538e2FD9cCA848B29489D0’)
-in the geth console
-Step 6-> Run the command miner.start() to start mining
-
-
-
-
-Step 7-> Below screenshots are the mining processes running on your local
-machine.
-
-Step 8->	To stop the mining press Ctrl+D
-
-
-PRACTICAL-7 CREATE YOUR OWN BLOCKCHAIN AND DEMONSTRATE
-ITS USE
-Create a javascript folder with the following code in any folder of your choice.
-JavaScript Code
-const SHA256 = require("crypto-js/sha256");
-class Block {
-constructor(index, timestamp, data, previousHash = "") {
-this.index = index;
-this.timestamp = timestamp;
-this.data = data;
-this.previousHash = previousHash;
-this.hash = this.calculateHash();
-}
-calculateHash() {
-return SHA256(
-this.index +
-this.previousHash +
-this.timestamp +
-JSON.stringify(this.data)
-).toString();
-}
-}
-class Blockchain {
-constructor() {
-this.chain = [this.createGenesisBlock()];
-}
-createGenesisBlock() {
-return new Block(0, "21/04/2023", "Genesis Block", "0");
-}
-getLatestBlock() {
-return this.chain[this.chain.length - 1];
-}
-addBlock(newBlock) {
-newBlock.previousHash = this.getLatestBlock().hash;
-newBlock.hash = newBlock.calculateHash();
-this.chain.push(newBlock);
-}
-isChainValid() {
-for (let i = 1; i < this.chain.length; i +) {
-const currentBlock = this.chain[i];
-const previousBlock = this.chain[i - 1];
-if (currentBlock.hash = currentBlock.calculateHash()) {
-return false;
-}
-if (currentBlock.previousHash = previousBlock.hash) {
-return false;
-}
-}
-return true;
-}
-}
-/Blockchain Implementation
-let myCoin = new Blockchain();
-myCoin.addBlock(new Block(1, "22/04/2023", { amount: 4 }));
-myCoin.addBlock(new Block(2, "22/04/2023", { amount: 8 }));
-/console.log('Is blockchain valid? ' + myCoin.isChainValid());
-console.log(JSON.stringify(myCoin, null, 4));
-Output
-Flow of execution
-Step 1->	Make sure you have installed nodejs in your system
-
-Step 2->	We need crypto –js node module to make our own blockchain. So install it as following
-
-Step 3->	Run the above code in command line using command: node main.js
 
 
 
@@ -1241,3 +580,1084 @@ Step 3->	Run the above code in command line using command: node main.js
 
 
 
+3D) Compare two nouns   
+   source code: 
+ import nltk 
+from nltk.corpus import wordnet 
+ 
+syn1 = wordnet.synsets('football') 
+syn2 = wordnet.synsets('soccer') 
+ 
+# A word may have multiple synsets, so need to compare each synset of word1 with synset of word2 
+for s1 in syn1:     for s2 in syn2:         print("Path similarity of: ")         print(s1, '(', s1.pos(), ')', '[', s1.definition(), ']')         print(s2, '(', s2.pos(), ')', '[', s2.definition(), ']') 
+        print("   is", s1.path_similarity(s2))         print() 
+  	  output: 
+ 
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+3E) Handling stopword: 
+i) Using nltk Adding or Removing Stop Words in NLTK's Default Stop Word List 
+ 
+    code: 
+import nltk from nltk.corpus import stopwords nltk.download('stopwords') 
+from nltk.tokenize import word_tokenize 
+ 
+text = "Yashesh likes to play football, however he is not too fond of tennis." text_tokens = word_tokenize(text) 
+ 
+tokens_without_sw = [word for word in text_tokens if not word in stopwords.words()] 
+ 
+print(tokens_without_sw)  
+ 
+#add the word play to the NLTK stop word collection all_stopwords = stopwords.words('english') all_stopwords.append('play') 
+ 
+text_tokens = word_tokenize(text) 
+tokens_without_sw = [word for word in text_tokens if not word in all_stopwords] 
+ 
+print(tokens_without_sw) 
+ 
+#remove ‘not’ from stop word collection all_stopwords.remove('not') 
+ 
+text_tokens = word_tokenize(text) 
+tokens_without_sw = [word for word in text_tokens if not word in all_stopwords] 
+ 
+print(tokens_without_sw) 
+ 
+output 
+ 
+ 
+
+
+
+
+
+
+
+ii) Using Gensim Adding and Removing Stop Words in Default Gensim Stop Words List 
+     code: 
+#pip install gensim import gensim 
+from gensim.parsing.preprocessing import remove_stopwords 
+ 
+text = "Yashesh likes to play football, however he is not too fond of tennis." filtered_sentence = remove_stopwords(text) 
+ 
+print(filtered_sentence) 
+ 
+all_stopwords = gensim.parsing.preprocessing.STOPWORDS print(all_stopwords) 
+ 
+'''The following script adds likes and play to the list of stop words in Gensim:''' 
+ 
+from gensim.parsing.preprocessing import STOPWORDS 
+ 
+all_stopwords_gensim = STOPWORDS.union(set(['likes', 'play'])) 
+ 
+text = "Yashesh likes to play football, however he is not too fond of tennis." text_tokens = word_tokenize(text) 
+tokens_without_sw = [word for word in text_tokens if not word in all_stopwords_gensim] 
+ 
+print(tokens_without_sw)  
+ 
+'''Output: 
+ 
+['Yashesh', 'football', ',', 'fond', 'tennis', '.'] 
+ 
+The following script removes the word "not" from the set of stop words in Gensim:''' 
+ 
+from gensim.parsing.preprocessing import STOPWORDS 
+ 
+all_stopwords_gensim = STOPWORDS sw_list = {"not"} 
+all_stopwords_gensim = STOPWORDS.difference(sw_list) 
+ 
+text = "Yashesh likes to play football, however he is not too fond of tennis." text_tokens = word_tokenize(text) 
+tokens_without_sw = [word for word in text_tokens if not word in all_stopwords_gensim] 
+ 
+print(tokens_without_sw) 
+ 
+ 
+     output 
+    Microsoft Visual C++ 14.0 is required. Get it with "Build Tools for Visual Studio": 
+https://visualstudio.microsoft.com/downloads/ 
+ 
+
+
+
+
+iii) Using Spacy Adding and Removing Stop Words in Default Spacy Stop Words List 
+ 
+code:  
+#pip install spacy 
+#python -m spacy download en_core_web_sm 
+#python -m spacy download en 
+ 
+import spacy import nltk 
+from nltk.tokenize import word_tokenize 
+ 
+sp = spacy.load('en_core_web_sm') 
+ 
+#add the word play to the NLTK stop word collection all_stopwords = sp.Defaults.stop_words all_stopwords.add("play") 
+ 
+text = "Yashesh likes to play football, however he is not too fond of tennis." text_tokens = word_tokenize(text) 
+tokens_without_sw = [word for word in text_tokens if not word in all_stopwords] 
+ 
+print(tokens_without_sw) 
+ 
+#remove 'not' from stop word collection all_stopwords.remove('not') 
+ 
+tokens_without_sw = [word for word in text_tokens if not word in all_stopwords] 
+ 
+print(tokens_without_sw)  
+ output: 
+ 
+ 
+ 
+ 
+ 
+
+
+
+
+
+
+
+4) Text Tokenization 
+4A) Tokenization using Python’s split() function
+ code: text = """ This tool is an a beta stage. Alexa developers can use Get Metrics API to seamlessly analyse metric. It also supports custom skill model, prebuilt Flash Briefing model, and the Smart Home Skill API. You can use this tool for creation of monitors, alarms, and dashboards that spotlight changes. The release of these three tools will enable developers to create visual rich skills for Alexa devices with screens. Amazon describes these tools as the collection of tech and tools for creating visually rich and interactive voice experiences.  """ 
+data = text.split('.') for i in data:     print (i) 
+ 
+output: 
+ 
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+B)Tokenization using Regular Expressions (RegEx) 
+ code: 
+import nltk 
+# import RegexpTokenizer() method from nltk 
+from nltk.tokenize import RegexpTokenizer 
+     
+# Create a reference variable for Class RegexpTokenizer tk = RegexpTokenizer('\s+', gaps = True) 
+     
+# Create a string input 
+str = "I love to study Natural Language Processing in Python" 
+     
+# Use tokenize method 
+tokens = tk.tokenize(str) 
+     
+print(tokens) 
+ 
+output: 
+ 
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+C) Tokenization using NLTK 
+ 
+code: 
+import nltk 
+from nltk.tokenize import word_tokenize 
+     
+# Create a string input 
+str = "I love to study Natural Language Processing in Python" 
+     
+# Use tokenize method 
+print(word_tokenize(str)) 
+ 
+output: 
+ 
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+D) Tokenization using the spaCy library 
+code: import spacy 
+nlp = spacy.blank("en") 
+ 
+# Create a string input 
+str = "I love to study Natural Language Processing in Python" 
+ 
+# Create an instance of document; 
+# doc object is a container for a sequence of Token objects. doc = nlp(str) 
+ 
+# Read the words; Print the words 
+# words = [word.text for word in doc] print(words) 
+ 
+output: 
+ 
+ 
+
+
+
+
+
+
+
+
+
+
+E) Tokenization using Keras 
+ 
+code: 
+#pip install keras #pip install tensorflow import keras 
+from keras.preprocessing.text import text_to_word_sequence 
+ 
+# Create a string input 
+str = "I love to study Natural Language Processing in Python" 
+ 
+# tokenizing the text 
+tokens = text_to_word_sequence(str) 
+print(tokens) 
+ 
+output: 
+ 
+ 
+ 
+
+
+
+
+
+
+
+
+
+F) Tokenization using Gensim 
+ 
+code: 
+#pip install gensim 
+ 
+from gensim.utils import tokenize 
+ 
+# Create a string input 
+str = "I love to study Natural Language Processing in Python" 
+ 
+# tokenizing the text 
+list(tokenize(str)) 
+ 
+output: 
+Microsoft Visual C++ 14.0 is required. Get it with "Build Tools for Visual Studio": 
+https://visualstudio.microsoft.com/downloads/ 
+ 
+ 
+ 
+ 
+ 
+ 
+
+
+
+5)A)Import NLP Libraries for Indian Languages and 
+Perform:
+ Note: Execute this practical in https://colab.research.google.com/ 
+A) word tokenization in Hindi Source code: 
+!pip install torch==1.3.1+cpu -f https://download.pytorch.org/whl/torch_stable.html 
+!pip install inltk 
+!pip install tornado==4.5.3      
+from inltk.inltk import setup 
+setup('hi') 
+from inltk.inltk import tokenize 
+hindi_text = """प्राकृ तिक भाषा सीखना बहुि तिलचस्प है।""" 
+# tokenize(input text, language code) tokenize(hindi_text, "hi") 
+ 
+output 
+['▁प्राकृ तिक', '▁भाषा', '▁सीखना', '▁बहुि', '▁तिलचस्प', '▁है', '।'] 
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+B) Generate similar sentences from a given Hindi text input Source code: 
+!pip install torch==1.3.1+cpu -f https://download.pytorch.org/whl/torch_stable.html 
+ 
+!pip install inltk 
+ 
+!pip install tornado==4.5.3 
+ 
+from inltk.inltk import setup 
+setup('hi') 
+ 
+from inltk.inltk import get_similar_sentences 
+ 
+# get similar sentences to the one given in hindi 
+output = get_similar_sentences('मैं आज बहुि खुश हूं', 5, 'hi') 
+ 
+print(output) 
+ 
+Output: 
+['मैं आजकल बहुि खुश हूं', 'मैं आज अत्यतिक खुश हूं', 'मैं अभी बहुि खुश हूं', 'मैं वितमान बहुि खुश हूं', 'मैं वितमान बहुि खुश हूं'] 
+ 
+
+
+
+
+
+
+C) Identify the Indian language of a text Source code: 
+!pip install torch==1.3.1+cpu -f https://download.pytorch.org/whl/torch_stable.html 
+ 
+!pip install inltk 
+ 
+!pip install tornado==4.5.3 
+ 
+from inltk.inltk import setup setup('gu') 
+ 
+from inltk.inltk import identify_language #Identify the Lnaguage of given text 
+identify_language('બીના કાપડિયા') 
+ 
+Output: gujarati 
+ 
+ 
+ 
+ 
+ 
+ 
+
+
+6) Illustrate part of speech tagging. 
+A)Part of speech Tagging and chunking of user defined text. 
+B)Named Entity recognition of user defined text. 
+C)Named Entity recognition with diagram using NLTK corpus – treebank 
+ 
+POS Tagging, chunking and NER: 
+A) sentence tokenization, word tokenization, Part of speech Tagging and chunking of user defined text. Source code: import nltk from nltk import tokenize nltk.download('punkt') from nltk import tag from nltk import chunk 
+nltk.download('averaged_perceptron_tagger') nltk.download('maxent_ne_chunker') nltk.download('words') 
+ 
+para = "Hello! My name is Beena Kapadia. Today you'll be learning NLTK." sents = tokenize.sent_tokenize(para) 
+print("\nsentence tokenization\n===================\n",sents) 
+ 
+# word tokenization print("\nword tokenization\n===================\n") for index in range(len(sents)):   words = tokenize.word_tokenize(sents[index])   print(words) 
+ 
+ 
+   
+# POS Tagging 
+ 
+tagged_words = [] for index in range(len(sents)): 
+  tagged_words.append(tag.pos_tag(words)) 
+print("\nPOS Tagging\n===========\n",tagged_words) 
+ 
+ 
+# chunking 
+ 
+tree = [] for index in range(len(sents)): 
+  tree.append(chunk.ne_chunk(tagged_words[index])) print("\nchunking\n========\n") print(tree) 
+ 
+Output: 
+sentence tokenization 
+=================== 
+ ['Hello!', 'My name is Beena Kapadia.', "Today you'll be learning NLTK."] 
+ 
+word tokenization 
+=================== 
+ 
+['Hello', '!'] 
+['My', 'name', 'is', 'Beena', 'Kapadia', '.'] 
+['Today', 'you', "'ll", 'be', 'learning', 'NLTK', '.'] 
+ 
+POS Tagging 
+=========== 
+ [[('Today', 'NN'), ('you', 'PRP'), ("'ll", 'MD'), ('be', 'VB'), ('learning', 'VBG'), ('NLTK', 
+'NNP'), ('.', '.')], [('Today', 'NN'), ('you', 'PRP'), ("'ll", 'MD'), ('be', 'VB'), ('learning', 
+'VBG'), ('NLTK', 'NNP'), ('.', '.')], [('Today', 'NN'), ('you', 'PRP'), ("'ll", 'MD'), ('be', 'VB'), ('learning', 'VBG'), ('NLTK', 'NNP'), ('.', '.')]] 
+ 
+chunking 
+======== 
+ 
+[Tree('S', [('Today', 'NN'), ('you', 'PRP'), ("'ll", 'MD'), ('be', 'VB'), ('learning', 'VBG'), 
+Tree('ORGANIZATION', [('NLTK', 'NNP')]), ('.', '.')]), Tree('S', [('Today', 'NN'), ('you', 
+'PRP'), ("'ll", 'MD'), ('be', 'VB'), ('learning', 'VBG'), Tree('ORGANIZATION', [('NLTK', 
+'NNP')]), ('.', '.')]), Tree('S', [('Today', 'NN'), ('you', 'PRP'), ("'ll", 'MD'), ('be', 'VB'), 
+('learning', 'VBG'), Tree('ORGANIZATION', [('NLTK', 'NNP')]), ('.', '.')])] 
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+B) Named Entity recognition using user defined text. 
+Source code: 
+!pip install -U spacy 
+!python -m spacy download en_core_web_sm 
+import spacy 
+ 
+# Load English tokenizer, tagger, parser and NER nlp = spacy.load("en_core_web_sm") 
+ 
+# Process whole documents text = ("When Sebastian Thrun started working on self-driving cars at "         "Google in 2007, few people outside of the company took him "         "seriously. “I can tell you very senior CEOs of major American " 
+        "car companies would shake my hand and turn away because I wasn’t " 
+        "worth talking to,” said Thrun, in an interview with Recode earlier " 
+        "this week.") 
+doc = nlp(text) 
+ 
+# Analyse syntax print("Noun phrases:", [chunk.text for chunk in doc.noun_chunks]) print("Verbs:", [token.lemma_ for token in doc if token.pos_ == "VERB"]) 
+ 
+Output: 
+Noun phrases: ['Sebastian Thrun', 'self-driving cars', 'Google', 'few people', 'the company', 'him', 'I', 'you', 'very senior CEOs', 'major American car companies', 'my hand', 'I', 'Thrun', 'an interview', 'Recode'] 
+Verbs: ['start', 'work', 'drive', 'take', 'tell', 'shake', 'turn', 'be', 'talk', 'say'] 
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+C) Named Entity recognition with diagram using NLTK corpus – treebank. Source code: 
+ 
+Note: It runs on Python IDLE 
+ 
+import nltk 
+nltk.download('treebank') from nltk.corpus import treebank_chunk 
+treebank_chunk.tagged_sents()[0] 
+ 
+treebank_chunk.chunked_sents()[0] 
+treebank_chunk.chunked_sents()[0].draw() 
+ 
+Output: 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+
+
+
+7) Finite state automata 
+A) Define grammar using nltk. Analyze a sentence using the same. 
+Code: 
+import nltk from nltk import tokenize grammar1 = nltk.CFG.fromstring(""" 
+	 	S -> VP 
+        VP -> VP NP 
+        NP -> Det  NP 
+        Det -> 'that' 
+        NP -> singular Noun 
+        NP -> 'flight' 
+        VP -> 'Book'   
+	 	""") 
+sentence = "Book that flight" 
+ 
+for index in range(len(sentence)): 
+  all_tokens = tokenize.word_tokenize(sentence) 
+print(all_tokens) 
+ 
+parser = nltk.ChartParser(grammar1) for tree in parser.parse(all_tokens): 
+    print(tree) 
+    tree.draw() 
+ 
+output: 
+  
+
+
+
+
+
+
+
+
+B) Accept the input string with Regular expression of Finite Automaton: 101+. Source code: def FA(s): 
+#if the length is less than 3 then it can't be accepted, Therefore end the process.     if len(s)<3: 
+        return "Rejected" 
+#first three characters are fixed. Therefore, checking them using index     if s[0]=='1':         if s[1]=='0':             if s[2]=='1': 
+                # After index 2 only "1" can appear. Therefore break the process if any other character is detected                 for i in range(3,len(s)):                     if s[i]!='1': 
+                        return "Rejected" 
+                return "Accepted" # if all 4 nested if true              return "Rejected" # else of 3rd if         return "Rejected" # else of 2nd if     return "Rejected" # else of 1st if inputs=['1','10101','101','10111','01010','100','','10111101','1011111'] for i in inputs:     print(FA(i)) 
+ 
+Output: 
+Rejected 
+Rejected 
+Accepted 
+Accepted 
+Rejected 
+Rejected 
+Rejected 
+Rejected 
+Accepted 
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+C) Accept the input string with Regular expression of FA: (a+b)*bba. 
+Code: def FA(s):     size=0 
+#scan complete string and make sure that it contains only 'a' & 'b'     for i in s: 
+        if i=='a' or i=='b': 
+            size+=1         else: 
+            return "Rejected" 
+#After checking that it contains only 'a' & 'b' #check it's length it should be 3 atleast     if size>=3: 
+#check the last 3 elements         if s[size-3]=='b': 
+            if s[size-2]=='b':                     if s[size-1]=='a':                     return "Accepted" # if all 4 if true                 return "Rejected" # else of 4th if             return "Rejected" # else of 3rd if         return "Rejected" # else of 2nd if  
+    return "Rejected" # else of 1st if 
+ 
+inputs=['bba', 'ababbba', 'abba','abb', 'baba','bbb',''] for i in inputs:     print(FA(i)) 
+ 
+output: Rejected 
+Rejected 
+Accepted 
+Accepted 
+Rejected 
+Rejected 
+Rejected 
+Rejected 
+Accepted 
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+D) Implementation of Deductive Chart Parsing using context free grammar and a given sentence. Source code: import nltk from nltk import tokenize grammar1 = nltk.CFG.fromstring(""" 
+	 	S -> NP VP 
+	 	PP -> P NP 
+	 	NP -> Det N | Det N PP | 'I' 
+	 	VP -> V NP | VP PP 
+	 	Det -> 'a' | 'my' 
+	 	N -> 'bird' | 'balcony' 
+	 	V -> 'saw' 
+ 	P -> 'in'  	""") 
+sentence = "I saw a bird in my balcony" 
+ 
+for index in range(len(sentence)): 
+  all_tokens = tokenize.word_tokenize(sentence) 
+print(all_tokens) 
+ 
+# all_tokens = ['I', 'saw', 'a', 'bird', 'in', 'my', 'balcony'] 
+parser = nltk.ChartParser(grammar1) for tree in parser.parse(all_tokens): 
+    print(tree) 
+    tree.draw() 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+output: 
+ 
+                 
+ 
+ 
+ 
+
+
+8)Study PorterStemmer, LancasterStemmer, RegexpStemmer, SnowballStemmer , Study WordNetLemmatizer 
+ 
+Code: 
+# PorterStemmer import nltk 
+from nltk.stem import PorterStemmer word_stemmer = PorterStemmer() print(word_stemmer.stem('writing')) Output: 
+
+ 	#LancasterStemmer  
+import nltk from nltk.stem import LancasterStemmer Lanc_stemmer = LancasterStemmer() print(Lanc_stemmer.stem('writing')) Output: 
+ 
+#RegexpStemmer  
+import nltk 
+from nltk.stem import RegexpStemmer 
+Reg_stemmer = RegexpStemmer('ing$|s$|e$|able$', min=4) print(Reg_stemmer.stem('writing')) 
+output 
+ 
+ 
+ #SnowballStemmer  import nltk 
+from nltk.stem import SnowballStemmer english_stemmer = SnowballStemmer('english') print(english_stemmer.stem ('writing')) 
+output 
+ 
+ 
+ #WordNetLemmatizer 
+from nltk.stem import WordNetLemmatizer 
+lemmatizer = WordNetLemmatizer() 
+print("word :\tlemma")   print("rocks :", lemmatizer.lemmatize("rocks")) 
+print("corpora :", lemmatizer.lemmatize("corpora")) 
+# a denotes adjective in "pos" 
+print("better :", lemmatizer.lemmatize("better", pos ="a")) 
+Output: 
+ 
+ 
+
+9)Implement Naives Bayes Classifier 
+    Code: 
+ 	#pip install pandas 
+#pip install sklearn 
+ 
+import pandas as pd import numpy as np 
+ 
+sms_data = pd.read_csv("spam.csv", encoding='latin-1')
+
+import re import nltk from nltk.corpus import stopwords 
+from nltk.stem.porter import PorterStemmer 
+ 
+stemming = PorterStemmer() corpus = [] for i in range (0,len(sms_data)): 
+    s1 = re.sub('[^a-zA-Z]',repl = ' ',string = sms_data['v2'][i])     s1.lower() 
+    s1 = s1.split() 
+    s1 = [stemming.stem(word) for word in s1 if word not in set(stopwords.words('english'))]     s1 = ' '.join(s1) 
+    corpus.append(s1) 
+ 
+from sklearn.feature_extraction.text import CountVectorizer countvectorizer =CountVectorizer() 
+ 
+= countvectorizer.fit_transform(corpus).toarray() print(x) 
+ 
+= sms_data['v1'].values 
+print(y) 
+ 
+from sklearn.model_selection import train_test_split x_train,x_test,y_train,y_test = train_test_split(x,y,test_size = 0.3, 
+stratify=y,random_state=2) 
+ 
+#Multinomial Naïve Bayes. 
+from sklearn.naive_bayes import MultinomialNB multinomialnb = MultinomialNB() 
+multinomialnb.fit(x_train,y_train) 
+ 
+# Predicting on test data: 
+ 
+y_pred = multinomialnb.predict(x_test) print(y_pred) 
+ 
+#Results of our Models 
+from sklearn.metrics import classification_report, confusion_matrix from sklearn.metrics import accuracy_score 
+ 
+print(classification_report(y_test,y_pred)) 
+print("accuracy_score: ",accuracy_score(y_test,y_pred)) 
+ 
+input: spam.csv file from github  
+ 
+output: 
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+
+
+
+
+
+
+10) Speech Tagging: 
+i. Speech tagging using spacy 
+ code import spacy 
+sp = spacy.load('en_core_web_sm') 
+sen = sp(u"I like to play football. I hated it in my childhood though") print(sen.text) print(sen[7].pos_) print(sen[7].tag_) print(spacy.explain(sen[7].tag_)) for word in sen:     print(f'{word.text:{12}} {word.pos_:{10}} {word.tag_:{8}} 
+{spacy.explain(word.tag_)}') 
+  sen = sp(u'Can you google it?') word = sen[2] 
+ print(f'{word.text:{12}} {word.pos_:{10}} {word.tag_:{8}} 
+{spacy.explain(word.tag_)}') sen = sp(u'Can you search it on google?') word = sen[5] 
+ print(f'{word.text:{12}} {word.pos_:{10}} {word.tag_:{8}} 
+{spacy.explain(word.tag_)}') 
+ #Finding the Number of POS Tags 
+sen = sp(u"I like to play football. I hated it in my childhood though") 
+num_pos = sen.count_by(spacy.attrs.POS) 
+num_pos 
+ for k,v in sorted(num_pos.items()): 
+    print(f'{k}. {sen.vocab[k].text:{8}}: {v}') 
+ #Visualizing Parts of Speech Tags 
+from spacy import displacy 
+ sen = sp(u"I like to play football. I hated it in my childhood though") displacy.serve(sen, style='dep', options={'distance': 120}) 
+output: 
+ 
+
+To view the dependency tree, type the following address in your browser: http://127.0.0.1:5000/. You will see the following dependency tree: 
+
+
+
+
+ii. Speech tagging using nktl 
+code: 
+import nltk 
+from nltk.corpus import state_union 
+from nltk.tokenize import PunktSentenceTokenizer 
+ 
+#create our training and testing data: 
+train_text = state_union.raw("2005-GWBush.txt") 
+sample_text = state_union.raw("2006-GWBush.txt") 
+ 
+#train the Punkt tokenizer like: 
+custom_sent_tokenizer = PunktSentenceTokenizer(train_text) 
+ 
+# tokenize: 
+tokenized = custom_sent_tokenizer.tokenize(sample_text) 
+ 
+def process_content():     try:         for i in tokenized[:2]:             words = nltk.word_tokenize(i)             tagged = nltk.pos_tag(words)             print(tagged) 
+ 
+    except Exception as e: 
+        print(str(e)) 
+  process_content() 
+ 
+output: 
+
+
+
+B) Statistical parsing: 
+i. Usage of Give and Gave in the Penn Treebank sample Source code: 
+#probabilitistic parser 
+#Usage of Give and Gave in the Penn Treebank sample 
+ 
+import nltk import nltk.parse.viterbi 
+import nltk.parse.pchart 
+ 
+def give(t): 
+    return t.label() == 'VP' and len(t) > 2 and t[1].label() == 'NP'\         and (t[2].label() == 'PP-DTV' or t[2].label() == 'NP')\         and ('give' in t[0].leaves() or 'gave' in t[0].leaves()) 
+ 
+ 
+def sent(t):     return ' '.join(token for token in t.leaves() if token[0] not in '*-0') def print_node(t, width):     output = "%s %s: %s / %s: %s" %\ 
+        (sent(t[0]), t[1].label(), sent(t[1]), t[2].label(), sent(t[2]))     if len(output) > width:         output = output[:width] + "..."     print (output) 
+ 
+for tree in nltk.corpus.treebank.parsed_sents():     for t in tree.subtrees(give): 
+        print_node(t, 72) 
+ 
+Output: 
+
+
+ii. probabilistic parser Source code: import nltk from nltk import PCFG 
+ 
+grammar = PCFG.fromstring(''' 
+NP -> NNS [0.5] | JJ NNS [0.3] | NP CC NP [0.2] 
+NNS -> "men" [0.1] | "women" [0.2] | "children" [0.3] | NNS CC NNS [0.4] 
+JJ -> "old" [0.4] | "young" [0.6] 
+CC -> "and" [0.9] | "or" [0.1] 
+''') 
+ 
+print(grammar) 
+ 
+viterbi_parser = nltk.ViterbiParser(grammar) 
+ 
+token = "old men and women".split() 
+ 
+obj = viterbi_parser.parse(token) 
+ 
+print("Output: ") for x in obj:     print(x) 
+ 
+Output: 
+
+
+
+C) Malt parsing: 
+	     	Parse a sentence and draw a tree using malt parsing. 
+Note: 1) Java should be installed. 
+maltparser-1.7.2 zip file should be copied in C:\Users\Beena  Kapadia\AppData\Local\Programs\Python\Python39 folder and should be extracted in the same folder. 
+engmalt.linear-1.7.mco file should be copied to C:\Users\Beena  Kapadia\AppData\Local\Programs\Python\Python39 folder Source code: 
+# copy maltparser-1.7.2(unzipped version) and engmalt.linear-1.7.mco files to 
+C:\Users\Beena Kapadia\AppData\Local\Programs\Python\Python39 folder 
+# java should be installed 
+# environment variables should be set - MALT_PARSER - C:\Users\Beena 
+Kapadia\AppData\Local\Programs\Python\Python39\maltparser-1.7.2 and 
+MALT_MODEL - C:\Users\Beena 
+Kapadia\AppData\Local\Programs\Python\Python39\engmalt.linear-1.7.mco 
+ 
+from nltk.parse import malt 
+mp = malt.MaltParser('maltparser-1.7.2', 'engmalt.linear-1.7.mco')#file 	 t = mp.parse_one('I saw a bird from my window.'.split()).tree() print(t) 
+t.draw() 
+ 
+Output: 
+(saw I (bird a (from (window. my)))) 
+  
+ 
+ 
+
+
+11. A) Multiword Expressions in NLP Source code: 
+# Multiword Expressions in NLP 
+ 
+from nltk.tokenize import MWETokenizer from nltk import sent_tokenize, word_tokenize 
+s = '''Good cake cost Rs.1500\kg in Mumbai.  Please buy me one of them.\n\nThanks.''' mwe = MWETokenizer([('New', 'York'), ('Hong', 'Kong')], separator='_') for sent in sent_tokenize(s):     print(mwe.tokenize(word_tokenize(sent))) Output: 
+ 
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+B) Normalized Web Distance and Word Similarity Source code: 
+# Normalized Web Distance and Word Similarity 
+ 
+#convert 
+ 
+#Reliance supermarket 
+#Reliance hypermarket 
+#Reliance 
+#Reliance 
+#Reliance downtown 
+#Relianc market 
+#Mumbai 
+#Mumbai Hyper 
+#Mumbai dxb 
+#mumbai airport 
+#k.m trading 
+#KM Trading 
+#KM trade 
+#K.M.  Trading 
+#KM.Trading 
+ 
+#into 
+ 
+#Reliance 
+#Reliance 
+#Reliance 
+#Reliance 
+#Reliance 
+#Reliance 
+#Mumbai 
+#Mumbai 
+#Mumbai 
+#Mumbai 
+#KM Trading 
+#KM Trading 
+#KM Trading 
+#KM Trading 
+#KM Trading 
+ 
+import numpy as np 
+import re 
+import textdistance # pip install textdistance 
+# we will need scikit-learn>=0.21 import sklearn #pip install sklearn 
+from sklearn.cluster import AgglomerativeClustering 
+ 
+texts = [ 
+  'Reliance supermarket', 'Reliance hypermarket', 'Reliance', 'Reliance', 'Reliance downtown', 'Relianc market', 
+   'Mumbai', 'Mumbai Hyper', 'Mumbai dxb', 'mumbai airport',   
+  'k.m trading', 'KM Trading', 'KM trade', 'K.M.  Trading', 'KM.Trading' 
+] 
+ 
+def normalize(text): 
+  """ Keep only lower-cased text and numbers"""   return re.sub('[^a-z0-9]+', ' ', text.lower()) 
+ 
+def group_texts(texts, threshold=0.4):  
+  """ Replace each text with the representative of its cluster"""   normalized_texts = np.array([normalize(text) for text in texts])   distances = 1 - np.array([ 
+      [textdistance.jaro_winkler(one, another) for one in normalized_texts]        for another in normalized_texts 
+  ]) 
+  clustering = AgglomerativeClustering( 
+    distance_threshold=threshold, # this parameter needs to be tuned carefully     affinity="precomputed", linkage="complete", n_clusters=None 
+  ).fit(distances)   centers = dict()   for cluster_id in set(clustering.labels_):     index = clustering.labels_ == cluster_id     centrality = distances[:, index][index].sum(axis=1) 
+    centers[cluster_id] = normalized_texts[index][centrality.argmin()]   return [centers[i] for i in clustering.labels_] 
+ 
+print(group_texts(texts)) 
+ 
+Output: 
+ 
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+C) Word Sense Disambiguation  Source code: 
+#Word Sense Disambiguation from nltk.corpus import wordnet as wn 
+ 
+def get_first_sense(word, pos=None):     if pos:         synsets = wn.synsets(word,pos)     else: 
+        synsets = wn.synsets(word)     return synsets[0] 
+ 
+best_synset = get_first_sense('bank') 
+print ('%s: %s' % (best_synset.name, best_synset.definition)) best_synset = get_first_sense('set','n') 
+print ('%s: %s' % (best_synset.name, best_synset.definition)) best_synset = get_first_sense('set','v') print ('%s: %s' % (best_synset.name, best_synset.definition)) Output: 
+ 
+ 
+ 
